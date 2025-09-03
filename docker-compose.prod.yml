@@ -1,0 +1,31 @@
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: depoauto
+      POSTGRES_USER: depoauto
+      POSTGRES_PASSWORD: depoauto
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+  web:
+    build: .
+    depends_on:
+      - db
+    environment:
+      DATABASE_URL: postgres://depoauto:depoauto@db:5432/depoauto
+      DEBUG: "0"
+      # En producción real usar S3; no definir AWS_S3_ENDPOINT_URL
+      USE_S3: "true"
+      AWS_S3_REGION_NAME: us-east-1
+      AWS_S3_ADDRESSING_STYLE: auto
+      AWS_QUERYSTRING_AUTH: "false"
+      DJANGO_SETTINGS_MODULE: depoauto.settings
+      ALLOWED_HOSTS: depoauto.onrender.com
+    ports:
+      - "8000:8000"
+
+volumes:
+  db_data:
+
+

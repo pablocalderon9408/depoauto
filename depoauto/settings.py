@@ -171,6 +171,11 @@ if USE_S3:
     AWS_S3_ADDRESSING_STYLE = os.environ.get('AWS_S3_ADDRESSING_STYLE', 'auto')
     AWS_QUERYSTRING_AUTH = os.environ.get('AWS_QUERYSTRING_AUTH', 'false').lower() in ('1','true','yes')
 
+    # Ajustes recomendados para MinIO (endpoint HTTP local y estilo path)
+    if AWS_S3_ENDPOINT_URL and AWS_S3_ENDPOINT_URL.startswith('http://'):
+        os.environ.setdefault('S3_USE_SIGV4', 'true')
+        os.environ.setdefault('AWS_S3_SIGNATURE_VERSION', 's3v4')
+
     STORAGES['default'] = {
         'BACKEND': 'storages.backends.s3boto3.S3Boto3Storage',
     }
@@ -180,4 +185,8 @@ if USE_S3:
     if not AWS_S3_CUSTOM_DOMAIN and AWS_STORAGE_BUCKET_NAME:
         AWS_S3_CUSTOM_DOMAIN = f"{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com"
     if AWS_S3_CUSTOM_DOMAIN:
+        # Si hay dominio custom, usa HTTPS. Si no, y hay endpoint explícito, respeta su protocolo.
         MEDIA_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/"
+    elif AWS_S3_ENDPOINT_URL and AWS_STORAGE_BUCKET_NAME:
+        # Para MinIO en modo path-style
+        MEDIA_URL = f"{AWS_S3_ENDPOINT_URL}/{AWS_STORAGE_BUCKET_NAME}/"

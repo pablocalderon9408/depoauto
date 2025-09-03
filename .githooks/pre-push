@@ -1,0 +1,95 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Validación de identidad antes de push.
+# Bloquea el push si el email configurado no es el personal
+# o si los commits a empujar contienen el dominio laboral.
+
+PERSONAL_EMAIL="pablocalderon9408@gmail.com"
+# Dominios/correos bloqueados (laboral)
+BLOCKED_PATTERNS=("datainnovations.com" "pcalderon@datainnovations.com")
+
+red() { printf "\033[31m%s\033[0m\n" "$*"; }
+green() { printf "\033[32m%s\033[0m\n" "$*"; }
+yellow() { printf "\033[33m%s\033[0m\n" "$*"; }
+
+# 1) Validar configuración local del repo
+config_email=$(git config --get user.email || true)
+if [[ -z "${config_email}" ]]; then
+  red "ERROR: user.email no está configurado en este repositorio."
+  echo "Ejecuta: git config user.email \"${PERSONAL_EMAIL}\""
+  exit 1
+fi
+
+if [[ "${config_email}" != "${PERSONAL_EMAIL}" ]]; then
+  red "ERROR: user.email actual (${config_email}) no coincide con el personal (${PERSONAL_EMAIL})."
+  echo "Ejecuta: git config user.email \"${PERSONAL_EMAIL}\""
+  exit 1
+fi
+
+# 2) Validar commits a empujar
+mapfile -t updates < <(cat)
+
+# Si no hay actualizaciones (nada que empujar), al menos ya validamos la config
+if (( ${#updates[@]} == 0 )); then
+  exit 0
+fi
+
+bad_commits=()
+
+zero40="0000000000000000000000000000000000000000"
+
+for line in "${updates[@]}"; do
+  # Formato: <local_ref> <local_sha> <remote_ref> <remote_sha>
+  read -r local_ref local_sha remote_ref remote_sha <<<"${line}"
+
+  # Si se borra un ref, no hay commits que validar
+  if [[ "${local_sha}" == "${zero40}" ]]; then
+    continue
+  fi
+
+  # Calcular lista de commits a empujar para este ref
+  commits=""
+  if [[ "${remote_sha}" == "${zero40}" ]]; then
+    # Nueva rama/tag en remoto: tomar commits que aún no están en ningún remoto
+    commits=$(git rev-list "${local_sha}" --not --remotes || true)
+  else
+    commits=$(git rev-list "${remote_sha}..${local_sha}" || true)
+  fi
+
+  [[ -z "${commits}" ]] && continue
+
+  while IFS= read -r commit; do
+    [[ -z "${commit}" ]] && continue
+    author_email=$(git log -1 --format='%ae' "${commit}")
+    committer_email=$(git log -1 --format='%ce' "${commit}")
+
+    blocked=false
+    for pat in "${BLOCKED_PATTERNS[@]}"; do
+      if [[ "${author_email}" == *"${pat}"* ]] || [[ "${committer_email}" == *"${pat}"* ]]; then
+        blocked=true
+        break
+      fi
+    done
+
+    if [[ "${blocked}" == true ]]; then
+      bad_commits+=("${commit}|${author_email}|${committer_email}")
+    fi
+  done <<< "${commits}"
+done
+
+if (( ${#bad_commits[@]} > 0 )); then
+  red "ERROR: Se detectaron commits con email laboral (push bloqueado):"
+  printf '%s\n' "${bad_commits[@]}" | awk -F'|' '{printf "- %s  (author:%s, committer:%s)\n", $1, $2, $3}'
+  echo
+  yellow "Corrige la autoría antes de empujar:"
+  echo "  - Último commit: git commit --amend --reset-author --no-edit"
+  echo "  - Varios commits: git rebase -i <base> y en cada parada:"
+  echo "      git commit --amend --author=\"Pablo Calderon <${PERSONAL_EMAIL}>\" --no-edit"
+  echo "  - Luego: git push --force-with-lease"
+  exit 1
+fi
+
+exit 0
+
+

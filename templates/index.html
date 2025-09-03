@@ -1,0 +1,253 @@
+{% extends 'base.html' %}
+{% block title %}DepoAuto - Home{% endblock %}
+
+{% block extra_head %}
+<style>
+    .hero-img {
+        height: 420px;
+        object-fit: cover;
+    }
+
+    .category-card {
+        position: relative;
+        height: 160px;
+        background-size: cover;
+        background-position: center;
+        border-radius: .5rem;
+        overflow: hidden;
+    }
+
+    .category-card::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(180deg, rgba(0, 0, 0, 0.15), rgba(0, 0, 0, 0.55));
+    }
+
+    .category-card h5 {
+        position: absolute;
+        bottom: 10px;
+        left: 12px;
+        color: #fff;
+        margin: 0;
+        z-index: 1;
+    }
+
+    .hover-zoom {
+        transition: transform .25s ease, box-shadow .25s ease;
+    }
+
+    .hover-zoom:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 .5rem 1rem rgba(0, 0, 0, .15);
+    }
+
+    .product-img {
+        height: 160px;
+        object-fit: cover;
+        border-top-left-radius: .5rem;
+        border-top-right-radius: .5rem;
+    }
+
+    @media (min-width: 992px) {
+        .hero-img {
+            height: 520px;
+        }
+
+        .product-img {
+            height: 190px;
+        }
+    }
+
+    .badge-glow {
+        box-shadow: 0 0 0.75rem rgba(13, 110, 253, .5);
+    }
+
+    .carousel-caption {
+        text-shadow: 0 2px 10px rgba(0, 0, 0, .4);
+    }
+
+    /* Ensure hero caption is perfectly centered horizontally */
+    .hero-caption {
+        left: 0;
+        right: 0;
+    }
+
+    .btn-gradient {
+        background: linear-gradient(90deg, #0d6efd, #00a3ff);
+        border: none;
+    }
+
+    .btn-gradient:hover {
+        filter: brightness(.95);
+    }
+
+    .mini-kpis .card {
+        border: 0;
+    }
+
+    .mini-kpis .card-body {
+        display: flex;
+        align-items: center;
+        gap: .75rem;
+    }
+
+    .mini-kpis .icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: #f1f5ff;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        color: #0d6efd;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<!-- Hero carousel -->
+<div id="heroCarousel" class="carousel slide mb-5" data-bs-ride="carousel">
+    <div class="carousel-inner rounded-3 overflow-hidden shadow">
+        {% for p in featured_products|slice:":3" %}
+        <div class="carousel-item {% if forloop.first %}active{% endif %}">
+            <img class="w-100 hero-img" src="{{ p.image_url|default:'https://picsum.photos/seed/hero' }}"
+                alt="{{ p.name }}">
+            <div class="carousel-caption d-none d-md-block text-center hero-caption">
+                <span class="badge bg-primary badge-glow mb-2">New arrival</span>
+                <h2 class="display-6 fw-bold">{{ p.name }}</h2>
+                <p class="lead">High quality parts at the right price. Explore our latest selection.</p>
+                <a href="{% url 'product_list' %}" class="btn btn-gradient btn-lg">Shop now</a>
+            </div>
+        </div>
+        {% empty %}
+        <div class="carousel-item active">
+            <img class="w-100 hero-img" src="https://picsum.photos/seed/hero-fallback/1600/600" alt="Hero">
+            <div class="carousel-caption d-none d-md-block text-center hero-caption">
+                <span class="badge bg-primary badge-glow mb-2">Welcome</span>
+                <h2 class="display-6 fw-bold">Your vehicle parts marketplace</h2>
+                <p class="lead">Find quality auto parts and accessories at great prices.</p>
+                <a href="{% url 'product_list' %}" class="btn btn-gradient btn-lg">Shop now</a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+    </button>
+    <div class="carousel-indicators">
+        {% for p in featured_products|slice:":3" %}
+        <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="{{ forloop.counter0 }}"
+            class="{% if forloop.first %}active{% endif %}" aria-current="true"
+            aria-label="Slide {{ forloop.counter }}"></button>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- Mini KPIs -->
+<div class="mini-kpis row row-cols-2 row-cols-md-4 g-3 mb-5">
+    <div class="col">
+        <div class="card h-100">
+            <div class="card-body">
+                <span class="icon">🚚</span>
+                <div>
+                    <div class="fw-semibold">Fast shipping</div>
+                    <small class="text-muted">Across the country</small>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col">
+        <div class="card h-100">
+            <div class="card-body">
+                <span class="icon">🛡️</span>
+                <div>
+                    <div class="fw-semibold">Secure payments</div>
+                    <small class="text-muted">Trusted gateways</small>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col">
+        <div class="card h-100">
+            <div class="card-body">
+                <span class="icon">⭐</span>
+                <div>
+                    <div class="fw-semibold">Top rated</div>
+                    <small class="text-muted">By our customers</small>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col">
+        <div class="card h-100">
+            <div class="card-body">
+                <span class="icon">📦</span>
+                <div>
+                    <div class="fw-semibold">Quality parts</div>
+                    <small class="text-muted">Carefully sourced</small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Top categories with images -->
+<div class="d-flex align-items-center justify-content-between mb-3">
+    <h2 class="h4 mb-0">Top categories</h2>
+    <a class="btn btn-outline-primary btn-sm" href="{% url 'product_list' %}">View all</a>
+</div>
+<div class="row row-cols-2 row-cols-md-3 g-3 mb-5">
+    {% for cat in top_categories %}
+    <div class="col">
+        <a href="{% url 'product_list_by_category' cat.slug %}" class="text-decoration-none">
+            <div class="category-card hover-zoom" style="background-image: url('{{ cat.image_url }}')">
+                <h5>{{ cat.name }}</h5>
+            </div>
+        </a>
+    </div>
+    {% empty %}
+    <div class="col">
+        <div class="alert alert-info">No categories yet.</div>
+    </div>
+    {% endfor %}
+</div>
+
+<!-- New arrivals with images -->
+<div class="d-flex align-items-center justify-content-between mb-3">
+    <h2 class="h4 mb-0">New arrivals</h2>
+    <a class="btn btn-outline-primary btn-sm" href="{% url 'product_list' %}">Shop all</a>
+</div>
+<div class="row row-cols-2 row-cols-md-4 g-3">
+    {% for p in featured_products %}
+    <div class="col">
+        <div class="card h-100 hover-zoom">
+            <div class="ratio ratio-4x3">
+                <img class="img-contain"
+                    src="{{ p.image_url_display|default:'https://picsum.photos/seed/product/600/400' }}"
+                    alt="{{ p.name }}">
+            </div>
+            <div class="card-body">
+                <h5 class="card-title mb-1">{{ p.name }}</h5>
+                <p class="card-text text-muted small mb-2">SKU: {{ p.sku }}</p>
+                <div class="d-flex align-items-center justify-content-between">
+                    <span class="fw-semibold">${{ p.price }}</span>
+                    <a href="{% url 'product_detail' p.slug %}" class="btn btn-sm btn-primary">View</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="col">
+        <div class="alert alert-info">No products yet.</div>
+    </div>
+    {% endfor %}
+</div>
+
+{% endblock %}

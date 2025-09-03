@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    {% load static %}
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}DepoAuto{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <style>
+        .img-cover {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .img-contain {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            object-position: center;
+            background: #fff;
+        }
+
+        .whatsapp-float {
+            position: fixed;
+            right: 16px;
+            bottom: 64px;
+            z-index: 1050;
+        }
+
+        .btn-whatsapp {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: #25D366;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 .5rem 1rem rgba(0, 0, 0, .15);
+            text-decoration: none;
+        }
+
+        .btn-whatsapp:hover {
+            background: #1ebe5d;
+            color: #fff;
+        }
+
+        /* Nav hover effect */
+        .navbar .nav-link {
+            position: relative;
+            transition: color .2s ease;
+        }
+
+        .navbar .nav-link::after {
+            content: "";
+            position: absolute;
+            left: 0;
+            bottom: -4px;
+            width: 0;
+            height: 2px;
+            background-color: #0d6efd;
+            transition: width .2s ease;
+        }
+
+        .navbar .nav-link:hover {
+            color: #0d6efd;
+        }
+
+        .navbar .nav-link:hover::after {
+            width: 100%;
+        }
+
+        /* Sticky footer layout */
+        html,
+        body {
+            height: 100%;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        main {
+            flex: 1 0 auto;
+        }
+    </style>
+    {% block extra_head %}{% endblock %}
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+        <div class="container-fluid">
+            <a class="navbar-brand d-flex align-items-center" href="/">
+                <img src="{% static 'img/logo.jpeg' %}" alt="DepoAuto logo" height="36" class="me-2" />
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+                aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'index' %}">Inicio</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'product_list' %}">Productos</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'about' %}">Nuestra historia</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'contact' %}">Contacto</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container py-4">
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="bg-light py-4 mt-auto">
+        <div class="container">
+            <div class="row">
+                <div class="col text-center">
+                    <small>&copy; {% now "Y" %} DepoAuto. All rights reserved.</small>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <a class="whatsapp-float btn-whatsapp"
+        href="https://wa.me/573192333702?text=Quiero%20una%20asesoria%20en%20sus%20productos" target="_blank"
+        rel="noopener noreferrer" aria-label="Chat on WhatsApp">
+        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor" viewBox="0 0 16 16"
+            aria-hidden="true">
+            <path
+                d="M13.601 2.326A7.912 7.912 0 008.01 0c-4.403 0-7.99 3.584-7.99 7.99 0 1.41.37 2.787 1.07 4.002L0 16l4.129-1.082a7.96 7.96 0 003.88 1.01h.004c4.403 0 7.99-3.584 7.99-7.99a7.93 7.93 0 00-2.402-5.612zM8.01 14.5h-.003a6.48 6.48 0 01-3.3-.9l-.236-.14-2.453.644.656-2.39-.154-.245a6.49 6.49 0 01-.996-3.365c0-3.588 2.922-6.51 6.51-6.51a6.47 6.47 0 014.618 1.914 6.47 6.47 0 011.906 4.61c0 3.588-2.922 6.51-6.51 6.51zm3.692-4.842c-.2-.1-1.176-.58-1.358-.646-.182-.067-.315-.1-.448.1-.133.2-.513.646-.628.78-.114.133-.233.15-.433.05-.2-.1-.842-.31-1.603-.99-.592-.528-.992-1.18-1.108-1.38-.115-.2-.012-.308.088-.408.09-.09.2-.234.3-.35.1-.116.133-.2.2-.333.067-.133.034-.25-.017-.35-.05-.1-.448-1.08-.615-1.483-.162-.39-.327-.335-.448-.34l-.383-.007c-.133 0-.35.05-.533.25-.182.2-.7.683-.7 1.665s.717 1.933.817 2.067c.1.133 1.41 2.148 3.417 3.007.478.206.85.33 1.14.422.477.152.91.13 1.254.079.383-.058 1.176-.48 1.343-.944.166-.466.166-.866.116-.95-.05-.083-.183-.133-.383-.233z" />
+        </svg>
+    </a>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
+    {% block extra_scripts %}{% endblock %}
+</body>
+
+</html>

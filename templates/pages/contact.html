@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% block title %}Contact - DepoAuto{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-12 col-lg-8">
+        <h1 class="h3 mb-3">Contacto</h1>
+        <p class="mb-4">¿Tienes dudas? Escríbenos y te ayudamos a encontrar el repuesto ideal.</p>
+        {% if messages %}
+        {% for m in messages %}
+        <div class="alert alert-{{ m.tags }}">{{ m }}</div>
+        {% endfor %}
+        {% endif %}
+        <div class="card">
+            <div class="card-body">
+                <form method="post" action="{% url 'contact' %}">
+                    {% csrf_token %}
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Nombre</label>
+                            <input type="text" class="form-control" name="name" placeholder="Tu nombre" required />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Email</label>
+                            <input type="email" class="form-control" name="email" placeholder="tucorreo@ejemplo.com"
+                                required />
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Mensaje</label>
+                            <textarea class="form-control" rows="4" name="message" placeholder="¿Cómo podemos ayudarte?"
+                                required></textarea>
+                        </div>
+                        <div class="col-12 d-flex justify-content-end">
+                            <button type="submit" class="btn btn-primary">Enviar</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

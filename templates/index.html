@@ -111,26 +111,26 @@
 <div id="heroCarousel" class="carousel slide mb-5" data-bs-ride="carousel">
     <div class="carousel-inner rounded-3 overflow-hidden shadow">
         {% if site_config and site_config.hero_slides %}
-            {% for s in site_config.hero_slides %}
-            <div class="carousel-item {% if forloop.first %}active{% endif %}">
-                <img class="w-100 hero-img" src="{{ s.image_url }}" alt="{{ s.title|default:'Hero' }}">
-                <div class="carousel-caption d-none d-md-block text-center hero-caption">
-                    {% if s.title %}<h2 class="display-6 fw-bold">{{ s.title }}</h2>{% endif %}
-                    {% if s.subtitle %}<p class="lead">{{ s.subtitle }}</p>{% endif %}
-                    <a href="{% url 'product_list' %}" class="btn btn-gradient btn-lg">Ver productos</a>
-                </div>
+        {% for s in site_config.hero_slides %}
+        <div class="carousel-item {% if forloop.first %}active{% endif %}">
+            <img class="w-100 hero-img" src="{{ s.image_url }}" alt="{{ s.title|default:'Hero' }}">
+            <div class="carousel-caption d-none d-md-block text-center hero-caption">
+                {% if s.title %}<h2 class="display-6 fw-bold">{{ s.title }}</h2>{% endif %}
+                {% if s.subtitle %}<p class="lead">{{ s.subtitle }}</p>{% endif %}
+                <a href="{% url 'product_list' %}" class="btn btn-gradient btn-lg">Ver productos</a>
             </div>
-            {% endfor %}
+        </div>
+        {% endfor %}
         {% else %}
-            <div class="carousel-item active">
-                <img class="w-100 hero-img" src="https://picsum.photos/seed/hero-fallback/1600/600" alt="Hero">
-                <div class="carousel-caption d-none d-md-block text-center hero-caption">
-                    <span class="badge bg-primary badge-glow mb-2">Bienvenido</span>
-                    <h2 class="display-6 fw-bold">Repuestos y accesorios</h2>
-                    <p class="lead">Calidad para tu vehículo.</p>
-                    <a href="{% url 'product_list' %}" class="btn btn-gradient btn-lg">Ver productos</a>
-                </div>
+        <div class="carousel-item active">
+            <img class="w-100 hero-img" src="https://picsum.photos/seed/hero-fallback/1600/600" alt="Hero">
+            <div class="carousel-caption d-none d-md-block text-center hero-caption">
+                <span class="badge bg-primary badge-glow mb-2">Bienvenido</span>
+                <h2 class="display-6 fw-bold">Repuestos y accesorios</h2>
+                <p class="lead">Calidad para tu vehículo.</p>
+                <a href="{% url 'product_list' %}" class="btn btn-gradient btn-lg">Ver productos</a>
             </div>
+        </div>
         {% endif %}
     </div>
     <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
@@ -143,11 +143,11 @@
     </button>
     <div class="carousel-indicators">
         {% if site_config and site_config.hero_slides %}
-            {% for s in site_config.hero_slides %}
-            <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="{{ forloop.counter0 }}"
-                class="{% if forloop.first %}active{% endif %}" aria-current="true"
-                aria-label="Slide {{ forloop.counter }}"></button>
-            {% endfor %}
+        {% for s in site_config.hero_slides %}
+        <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="{{ forloop.counter0 }}"
+            class="{% if forloop.first %}active{% endif %}" aria-current="true"
+            aria-label="Slide {{ forloop.counter }}"></button>
+        {% endfor %}
         {% endif %}
     </div>
 </div>

@@ -2,7 +2,7 @@ import random
 from decimal import Decimal
 from django.core.management.base import BaseCommand
 from faker import Faker
-from products.models import Category, Product, ProductImage, RelatedProduct
+from products.models import Category, Product, ProductVariant, VariantImage, RelatedProduct, SiteConfig
 
 
 class Command(BaseCommand):
@@ -48,13 +48,17 @@ class Command(BaseCommand):
                     is_active=True,
                 )
                 created += 1
-                # add extra gallery images
-                for j in range(random.randint(1, 3)):
-                    ProductImage.objects.create(
-                        product=product,
+                # create a default variant per product
+                variant = ProductVariant.objects.create(product=product, name="", is_active=True)
+                # add images to the variant
+                num_images = random.randint(1, 3)
+                for j in range(num_images):
+                    VariantImage.objects.create(
+                        variant=variant,
                         image_url=f"https://picsum.photos/seed/{sku}-{j}/800/600",
                         alt_text=f"{product.name} image {j+1}",
                         sort_order=j,
+                        is_main=(j == 0),
                     )
 
         # create curated related products for a subset
@@ -65,6 +69,13 @@ class Command(BaseCommand):
             random.shuffle(candidates)
             for order, rp in enumerate(candidates[:4]):
                 RelatedProduct.objects.get_or_create(from_product=p, to_product=rp, defaults={"sort_order": order})
+
+        # ensure a SiteConfig exists with one hero slide
+        cfg = SiteConfig.get_solo()
+        cfg.hero_title_1 = "Bienvenido a DepoAuto"
+        cfg.hero_subtitle_1 = "Repuestos y accesorios de calidad"
+        cfg.hero_image_1_url = "https://picsum.photos/seed/hero-seed/1600/600"
+        cfg.save()
 
         self.stdout.write(self.style.SUCCESS(f"Seeding completed. Categories: {len(categories)}, Products: {created}"))
 

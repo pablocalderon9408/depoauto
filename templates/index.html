@@ -10,7 +10,7 @@
 
     .category-card {
         position: relative;
-        height: 160px;
+        aspect-ratio: 1 / 1;
         background-size: cover;
         background-position: center;
         border-radius: .5rem;
@@ -110,28 +110,28 @@
 <!-- Hero carousel -->
 <div id="heroCarousel" class="carousel slide mb-5" data-bs-ride="carousel">
     <div class="carousel-inner rounded-3 overflow-hidden shadow">
-        {% for p in featured_products|slice:":3" %}
-        <div class="carousel-item {% if forloop.first %}active{% endif %}">
-            <img class="w-100 hero-img" src="{{ p.image_url|default:'https://picsum.photos/seed/hero' }}"
-                alt="{{ p.name }}">
-            <div class="carousel-caption d-none d-md-block text-center hero-caption">
-                <span class="badge bg-primary badge-glow mb-2">New arrival</span>
-                <h2 class="display-6 fw-bold">{{ p.name }}</h2>
-                <p class="lead">High quality parts at the right price. Explore our latest selection.</p>
-                <a href="{% url 'product_list' %}" class="btn btn-gradient btn-lg">Shop now</a>
+        {% if site_config and site_config.hero_slides %}
+            {% for s in site_config.hero_slides %}
+            <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                <img class="w-100 hero-img" src="{{ s.image_url }}" alt="{{ s.title|default:'Hero' }}">
+                <div class="carousel-caption d-none d-md-block text-center hero-caption">
+                    {% if s.title %}<h2 class="display-6 fw-bold">{{ s.title }}</h2>{% endif %}
+                    {% if s.subtitle %}<p class="lead">{{ s.subtitle }}</p>{% endif %}
+                    <a href="{% url 'product_list' %}" class="btn btn-gradient btn-lg">Ver productos</a>
+                </div>
             </div>
-        </div>
-        {% empty %}
-        <div class="carousel-item active">
-            <img class="w-100 hero-img" src="https://picsum.photos/seed/hero-fallback/1600/600" alt="Hero">
-            <div class="carousel-caption d-none d-md-block text-center hero-caption">
-                <span class="badge bg-primary badge-glow mb-2">Welcome</span>
-                <h2 class="display-6 fw-bold">Your vehicle parts marketplace</h2>
-                <p class="lead">Find quality auto parts and accessories at great prices.</p>
-                <a href="{% url 'product_list' %}" class="btn btn-gradient btn-lg">Shop now</a>
+            {% endfor %}
+        {% else %}
+            <div class="carousel-item active">
+                <img class="w-100 hero-img" src="https://picsum.photos/seed/hero-fallback/1600/600" alt="Hero">
+                <div class="carousel-caption d-none d-md-block text-center hero-caption">
+                    <span class="badge bg-primary badge-glow mb-2">Bienvenido</span>
+                    <h2 class="display-6 fw-bold">Repuestos y accesorios</h2>
+                    <p class="lead">Calidad para tu vehículo.</p>
+                    <a href="{% url 'product_list' %}" class="btn btn-gradient btn-lg">Ver productos</a>
+                </div>
             </div>
-        </div>
-        {% endfor %}
+        {% endif %}
     </div>
     <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
         <span class="carousel-control-prev-icon" aria-hidden="true"></span>
@@ -142,11 +142,13 @@
         <span class="visually-hidden">Next</span>
     </button>
     <div class="carousel-indicators">
-        {% for p in featured_products|slice:":3" %}
-        <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="{{ forloop.counter0 }}"
-            class="{% if forloop.first %}active{% endif %}" aria-current="true"
-            aria-label="Slide {{ forloop.counter }}"></button>
-        {% endfor %}
+        {% if site_config and site_config.hero_slides %}
+            {% for s in site_config.hero_slides %}
+            <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="{{ forloop.counter0 }}"
+                class="{% if forloop.first %}active{% endif %}" aria-current="true"
+                aria-label="Slide {{ forloop.counter }}"></button>
+            {% endfor %}
+        {% endif %}
     </div>
 </div>
 
@@ -207,7 +209,8 @@
     {% for cat in top_categories %}
     <div class="col">
         <a href="{% url 'product_list_by_category' cat.slug %}" class="text-decoration-none">
-            <div class="category-card hover-zoom" style="background-image: url('{{ cat.image_url }}')">
+            <div class="category-card hover-zoom" {% if cat.image_url_display%}
+                style="background-image: url('{{ cat.image_url_display }}')" {% endif %}>
                 <h5>{{ cat.name }}</h5>
             </div>
         </a>
@@ -236,8 +239,7 @@
             <div class="card-body">
                 <h5 class="card-title mb-1">{{ p.name }}</h5>
                 <p class="card-text text-muted small mb-2">SKU: {{ p.sku }}</p>
-                <div class="d-flex align-items-center justify-content-between">
-                    <span class="fw-semibold">${{ p.price }}</span>
+                <div class="d-flex align-items-center justify-content-end">
                     <a href="{% url 'product_detail' p.slug %}" class="btn btn-sm btn-primary">View</a>
                 </div>
             </div>

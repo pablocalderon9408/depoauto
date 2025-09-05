@@ -4,15 +4,17 @@ from django.core.paginator import Paginator
 from django.core.mail import send_mail, BadHeaderError
 from django.contrib import messages
 from django.conf import settings
-from .models import Category, Product, RelatedProduct
+from .models import Category, Product, RelatedProduct, SiteConfig
 
 
 def index(request):
     top_categories = Category.objects.filter(is_active=True).order_by('name')[:6]
     featured_products = Product.objects.filter(is_active=True).order_by('-created_at')[:8]
+    site_config = SiteConfig.get_solo()
     context = {
         'top_categories': top_categories,
         'featured_products': featured_products,
+        'site_config': site_config,
     }
     return render(request, 'index.html', context)
 
@@ -33,12 +35,7 @@ def product_list(request, category_slug=None):
             Q(name__icontains=query) | Q(description__icontains=query) | Q(sku__icontains=query)
         )
 
-    min_price = request.GET.get('min_price')
-    max_price = request.GET.get('max_price')
-    if min_price:
-        products = products.filter(price__gte=min_price)
-    if max_price:
-        products = products.filter(price__lte=max_price)
+    # Precio no se usa en este proyecto; se remueven filtros de precio
 
     products = products.order_by('name')
 
@@ -51,8 +48,6 @@ def product_list(request, category_slug=None):
         'page_obj': page_obj,
         'selected_category': selected_category,
         'query': query or '',
-        'min_price': min_price or '',
-        'max_price': max_price or '',
     }
     return render(request, 'products/product_list.html', context)
 

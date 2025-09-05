@@ -21,24 +21,7 @@
             </ul>
         </div>
 
-        <div class="card mt-3">
-            <div class="card-header">Price</div>
-            <div class="card-body">
-                <form method="get" class="row g-2">
-                    <div class="col-6">
-                        <input type="number" step="0.01" min="0" class="form-control" name="min_price" placeholder="Min"
-                            value="{{ min_price }}">
-                    </div>
-                    <div class="col-6">
-                        <input type="number" step="0.01" min="0" class="form-control" name="max_price" placeholder="Max"
-                            value="{{ max_price }}">
-                    </div>
-                    <div class="col-12">
-                        <button class="btn btn-primary w-100" type="submit">Apply</button>
-                    </div>
-                </form>
-            </div>
-        </div>
+        
     </aside>
 
     <section class="col-12 col-md-9">
@@ -64,8 +47,7 @@
                     <div class="card-body">
                         <h5 class="card-title">{{ p.name }}</h5>
                         <p class="card-text text-muted small">SKU: {{ p.sku }}</p>
-                        <div class="d-flex align-items-center justify-content-between">
-                            <span class="fw-semibold">${{ p.price }}</span>
+                        <div class="d-flex align-items-center justify-content-end">
                             <a class="btn btn-sm btn-primary" href="{% url 'product_detail' p.slug %}">View</a>
                         </div>
                     </div>
@@ -83,7 +65,7 @@
             <ul class="pagination">
                 {% if page_obj.has_previous %}
                 <li class="page-item"><a class="page-link"
-                        href="?page={{ page_obj.previous_page_number }}{% if query %}&q={{ query }}{% endif %}{% if min_price %}&min_price={{ min_price }}{% endif %}{% if max_price %}&max_price={{ max_price }}{% endif %}">Previous</a>
+                        href="?page={{ page_obj.previous_page_number }}{% if query %}&q={{ query }}{% endif %}">Previous</a>
                 </li>
                 {% else %}
                 <li class="page-item disabled"><span class="page-link">Previous</span></li>
@@ -94,14 +76,14 @@
                 <li class="page-item active" aria-current="page"><span class="page-link">{{i}}</span></li>
                 {% else %}
                 <li class="page-item"><a class="page-link"
-                        href="?page={{ i }}{% if query %}&q={{ query }}{% endif %}{% if min_price %}&min_price={{ min_price }}{% endif %}{% if max_price %}&max_price={{ max_price }}{% endif %}">{{i}}</a>
+                        href="?page={{ i }}{% if query %}&q={{ query }}{% endif %}">{{i}}</a>
                 </li>
                 {% endif %}
                 {% endfor %}
 
                 {% if page_obj.has_next %}
                 <li class="page-item"><a class="page-link"
-                        href="?page={{ page_obj.next_page_number }}{% if query %}&q={{ query }}{% endif %}{% if min_price %}&min_price={{ min_price }}{% endif %}{% if max_price %}&max_price={{ max_price }}{% endif %}">Next</a>
+                        href="?page={{ page_obj.next_page_number }}{% if query %}&q={{ query }}{% endif %}">Next</a>
                 </li>
                 {% else %}
                 <li class="page-item disabled"><span class="page-link">Next</span></li>

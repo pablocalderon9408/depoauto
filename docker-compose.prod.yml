@@ -45,9 +45,7 @@ services:
       DJANGO_SUPERUSER_EMAIL: ${DJANGO_SUPERUSER_EMAIL}
       DJANGO_SUPERUSER_PASSWORD: ${DJANGO_SUPERUSER_PASSWORD}
     ports:
-      - "${PORT:-8000}:8000"
+      - "127.0.0.1:${PORT:-8000}:8000"
 
 volumes:
   db_data:
-
-

@@ -182,18 +182,37 @@ class SiteConfig(models.Model):
     hero_subtitle_1 = models.CharField(max_length=240, blank=True)
     hero_image_1_url = models.URLField(max_length=500, blank=True)
     hero_image_1_file = models.ImageField(upload_to='site/hero/', blank=True, null=True)
+    hero_cta_1_label = models.CharField(max_length=80, blank=True)
+    hero_cta_1_url = models.CharField(max_length=300, blank=True)
 
     hero_title_2 = models.CharField(max_length=160, blank=True)
     hero_subtitle_2 = models.CharField(max_length=240, blank=True)
     hero_image_2_url = models.URLField(max_length=500, blank=True)
     hero_image_2_file = models.ImageField(upload_to='site/hero/', blank=True, null=True)
+    hero_cta_2_label = models.CharField(max_length=80, blank=True)
+    hero_cta_2_url = models.CharField(max_length=300, blank=True)
 
     hero_title_3 = models.CharField(max_length=160, blank=True)
     hero_subtitle_3 = models.CharField(max_length=240, blank=True)
     hero_image_3_url = models.URLField(max_length=500, blank=True)
     hero_image_3_file = models.ImageField(upload_to='site/hero/', blank=True, null=True)
+    hero_cta_3_label = models.CharField(max_length=80, blank=True)
+    hero_cta_3_url = models.CharField(max_length=300, blank=True)
 
     updated_at = models.DateTimeField(auto_now=True)
+
+    # Home sections configuration
+    show_top_categories = models.BooleanField(default=True)
+    home_top_categories_title = models.CharField(max_length=120, default="Top categories")
+    home_top_categories_limit = models.PositiveSmallIntegerField(default=6)
+    home_top_categories_cta_label = models.CharField(max_length=60, default="View all")
+    home_top_categories_cta_url = models.CharField(max_length=200, default="/products/")
+
+    show_new_arrivals = models.BooleanField(default=True)
+    home_new_arrivals_title = models.CharField(max_length=120, default="New arrivals")
+    home_new_arrivals_limit = models.PositiveSmallIntegerField(default=8)
+    home_new_arrivals_cta_label = models.CharField(max_length=60, default="Shop all")
+    home_new_arrivals_cta_url = models.CharField(max_length=200, default="/products/")
 
     class Meta:
         verbose_name = "Site configuration"
@@ -208,7 +227,8 @@ class SiteConfig(models.Model):
         return obj
 
     def _image_url_from_pair(self, url: str, file_field) -> str | None:
-        if getattr(file_field, 'url', None):
+        # Evitar acceder a .url si no hay archivo asociado
+        if file_field and getattr(file_field, 'name', None):
             try:
                 return file_field.url
             except Exception:
@@ -219,20 +239,59 @@ class SiteConfig(models.Model):
     def hero_slides(self):
         slides = []
         pairs = [
-            (self.hero_title_1, self.hero_subtitle_1, self.hero_image_1_url, self.hero_image_1_file),
-            (self.hero_title_2, self.hero_subtitle_2, self.hero_image_2_url, self.hero_image_2_file),
-            (self.hero_title_3, self.hero_subtitle_3, self.hero_image_3_url, self.hero_image_3_file),
+            (self.hero_title_1, self.hero_subtitle_1, self.hero_image_1_url, self.hero_image_1_file, self.hero_cta_1_label, self.hero_cta_1_url),
+            (self.hero_title_2, self.hero_subtitle_2, self.hero_image_2_url, self.hero_image_2_file, self.hero_cta_2_label, self.hero_cta_2_url),
+            (self.hero_title_3, self.hero_subtitle_3, self.hero_image_3_url, self.hero_image_3_file, self.hero_cta_3_label, self.hero_cta_3_url),
         ]
-        for title, subtitle, url, file_field in pairs:
+        for idx, (title, subtitle, url, file_field, cta_label, cta_url) in enumerate(pairs, start=1):
             effective_url = self._image_url_from_pair(url, file_field)
+            # Si hay texto pero no imagen, usar una imagen de respaldo
+            if not effective_url and (title or subtitle):
+                effective_url = f"https://picsum.photos/seed/hero-{idx}/1600/600"
             if effective_url:
                 slides.append({
                     'image_url': effective_url,
                     'title': title,
                     'subtitle': subtitle,
+                    'cta_label': cta_label or 'Ver productos',
+                    'cta_url': cta_url or '/products/',
                 })
         return slides
 
+
+class HeroSlide(models.Model):
+    site_config = models.ForeignKey(
+        SiteConfig,
+        on_delete=models.CASCADE,
+        related_name="slides",
+        null=True,
+        blank=True,
+    )
+    title = models.CharField(max_length=160, blank=True)
+    subtitle = models.CharField(max_length=240, blank=True)
+    image_url = models.URLField(max_length=500, blank=True, null=True)
+    image_file = models.ImageField(upload_to='site/hero/', blank=True, null=True)
+    cta_label = models.CharField(max_length=80, blank=True)
+    cta_url = models.CharField(max_length=300, blank=True)
+    is_active = models.BooleanField(default=True)
+    sort_order = models.PositiveSmallIntegerField(default=0)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ["sort_order", "id"]
+
+    def __str__(self) -> str:
+        return self.title or f"Slide #{self.id}"
+
+    @property
+    def image_url_display(self) -> str | None:
+        if getattr(self, 'image_file', None) and self.image_file:
+            try:
+                return self.image_file.url
+            except Exception:
+                pass
+        return self.image_url or None
 
 class RelatedProduct(models.Model):
     from_product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='related_from')

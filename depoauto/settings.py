@@ -132,12 +132,13 @@ STORAGES = {
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
-# Email settings
-if DEBUG:
-    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-else:
-    EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# # Email settings
+# if DEBUG:
+#     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+# else:
+#     EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = os.environ.get('EMAIL_HOST', 'smtp.gmail.com')
 EMAIL_PORT = int(os.environ.get('EMAIL_PORT', '587'))
 EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', 'pablocalderon9408@gmail.com')
@@ -170,6 +171,8 @@ if USE_S3:
     AWS_S3_SIGNATURE_VERSION = os.environ.get('AWS_S3_SIGNATURE_VERSION', 's3v4')
     AWS_S3_ADDRESSING_STYLE = os.environ.get('AWS_S3_ADDRESSING_STYLE', 'auto')
     AWS_QUERYSTRING_AUTH = os.environ.get('AWS_QUERYSTRING_AUTH', 'false').lower() in ('1','true','yes')
+    # Forzar protocolo de URL generado por django-storages (por defecto es https:)
+    AWS_S3_URL_PROTOCOL = os.environ.get('AWS_S3_URL_PROTOCOL', 'https:')
 
     # Ajustes recomendados para MinIO (endpoint HTTP local y estilo path)
     if AWS_S3_ENDPOINT_URL and AWS_S3_ENDPOINT_URL.startswith('http://'):
@@ -185,8 +188,16 @@ if USE_S3:
     if not AWS_S3_CUSTOM_DOMAIN and AWS_STORAGE_BUCKET_NAME:
         AWS_S3_CUSTOM_DOMAIN = f"{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com"
     if AWS_S3_CUSTOM_DOMAIN:
-        # Si hay dominio custom, usa HTTPS. Si no, y hay endpoint explícito, respeta su protocolo.
-        MEDIA_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/"
+        # Si incluye bucket en path (p.ej. localhost:9002/depoauto), anteponer http si no hay esquema
+        if AWS_S3_CUSTOM_DOMAIN.startswith(('http://', 'https://')):
+            MEDIA_URL = f"{AWS_S3_CUSTOM_DOMAIN.rstrip('/')}/"
+        else:
+            MEDIA_URL = f"http://{AWS_S3_CUSTOM_DOMAIN.rstrip('/')}/"
     elif AWS_S3_ENDPOINT_URL and AWS_STORAGE_BUCKET_NAME:
         # Para MinIO en modo path-style
         MEDIA_URL = f"{AWS_S3_ENDPOINT_URL}/{AWS_STORAGE_BUCKET_NAME}/"
+
+# Permitir override explícito de MEDIA_URL (útil en dev con MinIO expuesto en host)
+PUBLIC_MEDIA_URL = os.environ.get('PUBLIC_MEDIA_URL', '').strip()
+if PUBLIC_MEDIA_URL:
+    MEDIA_URL = PUBLIC_MEDIA_URL if PUBLIC_MEDIA_URL.endswith('/') else (PUBLIC_MEDIA_URL + '/')

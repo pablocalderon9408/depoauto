@@ -1,29 +1,51 @@
 services:
   db:
     image: postgres:16-alpine
+    restart: unless-stopped
     environment:
-      POSTGRES_DB: depoauto
-      POSTGRES_USER: depoauto
-      POSTGRES_PASSWORD: depoauto
+      POSTGRES_DB: ${POSTGRES_DB:-depoauto}
+      POSTGRES_USER: ${POSTGRES_USER:-depoauto}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-depoauto}
     volumes:
       - db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-depoauto} -d ${POSTGRES_DB:-depoauto}"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
 
   web:
     build: .
     depends_on:
-      - db
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+    env_file:
+      - .env
     environment:
-      DATABASE_URL: postgres://depoauto:depoauto@db:5432/depoauto
-      DEBUG: "0"
+      DATABASE_URL: ${DATABASE_URL}
+      DEBUG: ${DEBUG:-0}
+      RUN_MIGRATIONS_ON_START: ${RUN_MIGRATIONS_ON_START:-1}
+      RUN_COLLECTSTATIC_ON_START: ${RUN_COLLECTSTATIC_ON_START:-1}
       # En producción real usar S3; no definir AWS_S3_ENDPOINT_URL
-      USE_S3: "true"
-      AWS_S3_REGION_NAME: us-east-1
-      AWS_S3_ADDRESSING_STYLE: auto
-      AWS_QUERYSTRING_AUTH: "false"
-      DJANGO_SETTINGS_MODULE: depoauto.settings
-      ALLOWED_HOSTS: depoauto.onrender.com
+      USE_S3: ${USE_S3:-false}
+      AWS_S3_REGION_NAME: ${AWS_S3_REGION_NAME:-us-east-1}
+      AWS_S3_ADDRESSING_STYLE: ${AWS_S3_ADDRESSING_STYLE:-auto}
+      AWS_QUERYSTRING_AUTH: ${AWS_QUERYSTRING_AUTH:-false}
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
+      AWS_STORAGE_BUCKET_NAME: ${AWS_STORAGE_BUCKET_NAME}
+      AWS_S3_CUSTOM_DOMAIN: ${AWS_S3_CUSTOM_DOMAIN}
+      DJANGO_SETTINGS_MODULE: ${DJANGO_SETTINGS_MODULE:-depoauto.settings}
+      ALLOWED_HOSTS: ${ALLOWED_HOSTS}
+      CSRF_TRUSTED_ORIGINS: ${CSRF_TRUSTED_ORIGINS}
+      PORT: ${PORT:-8000}
+      AUTO_CREATE_SUPERUSER: ${AUTO_CREATE_SUPERUSER:-0}
+      DJANGO_SUPERUSER_USERNAME: ${DJANGO_SUPERUSER_USERNAME}
+      DJANGO_SUPERUSER_EMAIL: ${DJANGO_SUPERUSER_EMAIL}
+      DJANGO_SUPERUSER_PASSWORD: ${DJANGO_SUPERUSER_PASSWORD}
     ports:
-      - "8000:8000"
+      - "${PORT:-8000}:8000"
 
 volumes:
   db_data:

@@ -42,7 +42,13 @@ services:
     environment:
       DATABASE_URL: postgres://depoauto:depoauto@db:5432/depoauto
       DEBUG: "1"
+      RUN_MIGRATIONS_ON_START: "0"
+      RUN_COLLECTSTATIC_ON_START: "0"
+      USE_DEV_SERVER: "1"
       USE_S3: "true"
+      AWS_S3_CUSTOM_DOMAIN: "localhost:9002/depoauto"
+      AWS_S3_URL_PROTOCOL: "http:"
+      PUBLIC_MEDIA_URL: "http://localhost:9002/depoauto/"
       AWS_ACCESS_KEY_ID: minioadmin
       AWS_SECRET_ACCESS_KEY: minioadmin
       AWS_STORAGE_BUCKET_NAME: depoauto

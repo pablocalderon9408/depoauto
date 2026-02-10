@@ -1,11 +1,15 @@
 {% extends 'base.html' %}
+{% load static %}
 {% block title %}DepoAuto - Home{% endblock %}
 
 {% block extra_head %}
 <style>
     .hero-img {
         height: 420px;
-        object-fit: cover;
+        object-fit: contain;
+        object-position: center center;
+        background-color: #000;
+        /* evita "huecos" visibles en fondos claros */
     }
 
     .category-card {
@@ -102,22 +106,90 @@
         justify-content: center;
         color: #0d6efd;
     }
+
+    /* Contact glass styles */
+    .contact-gradient {
+        background: radial-gradient(120% 120% at 0% 0%, rgba(88, 28, 135, 0.25), transparent 60%),
+            radial-gradient(120% 120% at 100% 0%, rgba(30, 64, 175, 0.25), transparent 60%),
+            linear-gradient(135deg, rgba(15, 15, 28, 0.05), rgba(15, 15, 28, 0.08));
+        border-radius: 1.5rem;
+    }
+
+    .glass-card {
+        background: rgba(17, 25, 40, 0.6);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        -webkit-backdrop-filter: blur(10px);
+        backdrop-filter: blur(10px);
+        border-radius: 1rem;
+        box-shadow: 0 20px 40px rgba(2, 6, 23, 0.25);
+        color: #fff;
+    }
+
+    .input-icon-wrap {
+        position: relative;
+    }
+
+    .input-icon-wrap .icon {
+        position: absolute;
+        left: 14px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: rgba(255, 255, 255, 0.6);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .glass-input {
+        padding-left: 46px;
+        background: rgba(0, 0, 0, 0.2);
+        border: 1px solid rgba(148, 163, 184, 0.6);
+        color: #fff;
+        border-radius: .75rem;
+    }
+
+    .glass-input::placeholder {
+        color: rgba(255, 255, 255, 0.6);
+    }
+
+    .glass-input:focus {
+        border-color: #a78bfa;
+        box-shadow: 0 0 0 .2rem rgba(167, 139, 250, 0.3);
+        color: #fff;
+    }
+
+    .btn-glass-submit {
+        background: #fff;
+        color: #000;
+        font-weight: 700;
+        border-radius: .75rem;
+        transition: transform .12s ease, box-shadow .2s ease, background .2s ease;
+    }
+
+    .btn-glass-submit:hover {
+        background: #f3f4f6;
+        transform: scale(1.01);
+        box-shadow: 0 10px 20px rgba(2, 6, 23, .15);
+    }
+
+    .text-soft {
+        color: #94a3b8;
+    }
 </style>
 {% endblock %}
 
 {% block content %}
-
 <!-- Hero carousel -->
 <div id="heroCarousel" class="carousel slide mb-5" data-bs-ride="carousel">
     <div class="carousel-inner rounded-3 overflow-hidden shadow">
-        {% if site_config and site_config.hero_slides %}
-        {% for s in site_config.hero_slides %}
+        {% if hero_slides %}
+        {% for s in hero_slides %}
         <div class="carousel-item {% if forloop.first %}active{% endif %}">
-            <img class="w-100 hero-img" src="{{ s.image_url }}" alt="{{ s.title|default:'Hero' }}">
+            <img class="w-100 hero-img" src="{{ s.image_url_display }}" alt="{{ s.title|default:'Hero' }}">
             <div class="carousel-caption d-none d-md-block text-center hero-caption">
                 {% if s.title %}<h2 class="display-6 fw-bold">{{ s.title }}</h2>{% endif %}
                 {% if s.subtitle %}<p class="lead">{{ s.subtitle }}</p>{% endif %}
-                <a href="{% url 'product_list' %}" class="btn btn-gradient btn-lg">Ver productos</a>
+                <a href="{{ s.cta_url }}" class="btn btn-gradient btn-lg">{{ s.cta_label|default:'Ver productos' }}</a>
             </div>
         </div>
         {% endfor %}
@@ -142,8 +214,8 @@
         <span class="visually-hidden">Next</span>
     </button>
     <div class="carousel-indicators">
-        {% if site_config and site_config.hero_slides %}
-        {% for s in site_config.hero_slides %}
+        {% if hero_slides %}
+        {% for s in hero_slides %}
         <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="{{ forloop.counter0 }}"
             class="{% if forloop.first %}active{% endif %}" aria-current="true"
             aria-label="Slide {{ forloop.counter }}"></button>
@@ -201,6 +273,7 @@
 </div>
 
 <!-- Top categories with images -->
+{% if show_top_categories %}
 <div class="d-flex align-items-center justify-content-between mb-3">
     <h2 class="h4 mb-0">Top categories</h2>
     <a class="btn btn-outline-primary btn-sm" href="{% url 'product_list' %}">View all</a>
@@ -221,8 +294,12 @@
     </div>
     {% endfor %}
 </div>
+{% endif %}
+
+
 
 <!-- New arrivals with images -->
+{% if show_new_arrivals %}
 <div class="d-flex align-items-center justify-content-between mb-3">
     <h2 class="h4 mb-0">New arrivals</h2>
     <a class="btn btn-outline-primary btn-sm" href="{% url 'product_list' %}">Shop all</a>
@@ -251,5 +328,81 @@
     </div>
     {% endfor %}
 </div>
+{% endif %}
+
+{% block contact %}Contact - DepoAuto{% endblock %}
+{% block contact_content %}
+<div class="mb-5">
+    <div class="row justify-content-center">
+        <div class="col-12 col-lg-10">
+            <div class="contact-gradient p-4 p-md-5">
+                <div class="row align-items-center">
+                    <div class="col-lg-6 text-center text-lg-start mb-4 mb-lg-0">
+                        <h1 class="h3 h-lg-2 mb-3" style="font-weight:800; letter-spacing:-0.02em;">Aumenta la
+                            productividad de tu equipo</h1>
+                        <p class="mb-0 text-soft">Reduce tiempos de respuesta y escala tu negocio con nuestra atención
+                            personalizada.</p>
+                    </div>
+                    <div class="col-lg-6">
+                        {% if messages %}
+                        {% for m in messages %}
+                        <div class="alert alert-{{ m.tags }}">{{ m }}</div>
+                        {% endfor %}
+                        {% endif %}
+                        <div class="glass-card p-4 p-md-5">
+                            <form method="post" action="{% url 'contact' %}" class="vstack gap-3">
+                                {% csrf_token %}
+                                <div class="input-icon-wrap">
+                                    <span class="icon">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+                                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                            stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user">
+                                            <path d="M20 21a8 8 0 0 0-16 0" />
+                                            <circle cx="12" cy="7" r="4" />
+                                        </svg>
+                                    </span>
+                                    <input type="text" name="name" class="form-control glass-input py-3"
+                                        placeholder="Tu nombre completo" required />
+                                </div>
+                                <div class="input-icon-wrap">
+                                    <span class="icon">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+                                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                            stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-mail">
+                                            <rect width="20" height="16" x="2" y="4" rx="2" />
+                                            <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
+                                        </svg>
+                                    </span>
+                                    <input type="email" name="email" class="form-control glass-input py-3"
+                                        placeholder="tucorreo@ejemplo.com" required />
+                                </div>
+                                <div class="input-icon-wrap">
+                                    <span class="icon" style="top: 18px;">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+                                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                            stroke-linecap="round" stroke-linejoin="round"
+                                            class="lucide lucide-message-square-text">
+                                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                                            <path d="M13 8H7" />
+                                            <path d="M17 12H7" />
+                                        </svg>
+                                    </span>
+                                    <textarea name="message" rows="4" class="form-control glass-input"
+                                        placeholder="Cuéntanos cómo podemos ayudarte" required></textarea>
+                                </div>
+                                <button type="submit" class="btn btn-glass-submit w-100 py-3">SOLICITAR
+                                    CONTACTO</button>
+                                <p class="text-center text-soft small mb-0">Al enviar este formulario, aceptas que nos
+                                    pongamos en contacto contigo para mostrarte cómo DepoAuto puede ayudarte.</p>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}
 
 {% endblock %}

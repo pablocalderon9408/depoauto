@@ -1,5 +1,7 @@
 from django.contrib import admin
-from .models import Category, Product, ProductVariant, VariantImage, RelatedProduct, SiteConfig
+from django.shortcuts import redirect
+from django.urls import reverse
+from .models import Category, Product, ProductVariant, VariantImage, RelatedProduct, SiteConfig, HeroSlide
 
 
 @admin.register(Category)
@@ -57,11 +59,43 @@ class ProductVariantAdmin(admin.ModelAdmin):
 
 @admin.register(SiteConfig)
 class SiteConfigAdmin(admin.ModelAdmin):
+    inlines = []
     fieldsets = (
-        ("Hero 1", {"fields": ("hero_title_1", "hero_subtitle_1", "hero_image_1_url", "hero_image_1_file")}),
-        ("Hero 2", {"fields": ("hero_title_2", "hero_subtitle_2", "hero_image_2_url", "hero_image_2_file")}),
-        ("Hero 3", {"fields": ("hero_title_3", "hero_subtitle_3", "hero_image_3_url", "hero_image_3_file")}),
+        ("Carrusel - Slide 1", {"fields": ("hero_title_1", "hero_subtitle_1", "hero_image_1_url", "hero_image_1_file", "hero_cta_1_label", "hero_cta_1_url")}),
+        ("Carrusel - Slide 2", {"fields": ("hero_title_2", "hero_subtitle_2", "hero_image_2_url", "hero_image_2_file", "hero_cta_2_label", "hero_cta_2_url")}),
+        ("Carrusel - Slide 3", {"fields": ("hero_title_3", "hero_subtitle_3", "hero_image_3_url", "hero_image_3_file", "hero_cta_3_label", "hero_cta_3_url")}),
+        ("Sección: Categorías destacadas", {"fields": (
+            "show_top_categories", "home_top_categories_title", "home_top_categories_limit",
+            "home_top_categories_cta_label", "home_top_categories_cta_url",
+        )}),
+        ("Sección: Novedades", {"fields": (
+            "show_new_arrivals", "home_new_arrivals_title", "home_new_arrivals_limit",
+            "home_new_arrivals_cta_label", "home_new_arrivals_cta_url",
+        )}),
     )
     def has_add_permission(self, request):
-        # Single instance
         return not SiteConfig.objects.exists()
+
+    def changelist_view(self, request, extra_context=None):
+        # Redirigir directamente a editar la única instancia
+        obj = SiteConfig.get_solo()
+        url = reverse('admin:products_siteconfig_change', args=[obj.pk])
+        return redirect(url)
+
+
+class HeroSlideInline(admin.TabularInline):
+    model = HeroSlide
+    extra = 1
+    fields = ("title", "subtitle", "image_url", "image_file", "cta_label", "cta_url", "is_active", "sort_order")
+
+
+SiteConfigAdmin.inlines = [HeroSlideInline]
+
+
+@admin.register(HeroSlide)
+class HeroSlideAdmin(admin.ModelAdmin):
+    list_display = ("title", "is_active", "sort_order", "updated_at")
+    list_filter = ("is_active",)
+    search_fields = ("title", "subtitle")
+    ordering = ("sort_order", "id")
+    fields = ("title", "subtitle", "image_url", "image_file", "cta_label", "cta_url", "is_active", "sort_order")

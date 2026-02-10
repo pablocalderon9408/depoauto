@@ -4,17 +4,28 @@ from django.core.paginator import Paginator
 from django.core.mail import send_mail, BadHeaderError
 from django.contrib import messages
 from django.conf import settings
-from .models import Category, Product, RelatedProduct, SiteConfig
+from .models import Category, Product, RelatedProduct, SiteConfig, HeroSlide
 
 
 def index(request):
-    top_categories = Category.objects.filter(is_active=True).order_by('name')[:6]
-    featured_products = Product.objects.filter(is_active=True).order_by('-created_at')[:8]
     site_config = SiteConfig.get_solo()
+    top_limit = site_config.home_top_categories_limit if site_config else 6
+    new_limit = site_config.home_new_arrivals_limit if site_config else 8
+    top_categories = Category.objects.filter(is_active=True).order_by('name')[: top_limit]
+    featured_products = Product.objects.filter(is_active=True).order_by('-created_at')[: new_limit]
+    # Slides dinámicos: usa HeroSlide activos si existen; si no, usa SiteConfig.hero_slides
+    hero_slides = HeroSlide.objects.filter(is_active=True)
+
+    show_top_categories = site_config.show_top_categories if site_config else True
+    show_new_arrivals = site_config.show_new_arrivals if site_config else True
+    
     context = {
+        'show_top_categories': show_top_categories,
+        'show_new_arrivals': show_new_arrivals,
         'top_categories': top_categories,
         'featured_products': featured_products,
         'site_config': site_config,
+        'hero_slides': hero_slides,
     }
     return render(request, 'index.html', context)
 

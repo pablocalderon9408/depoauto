@@ -1,0 +1,51 @@
+Comandos para verificar que el dominio apunta a la IP correcta (depoautoco.com → 52.87.156.167)
+
+1) dig (respuesta corta del registro A)
+   $ dig +short depoautoco.com A
+   Explicación: devuelve la(s) IP(s) actuales para el dominio raíz. Esperado: 52.87.156.167.
+
+2) dig para www
+   $ dig +short www.depoautoco.com A
+   Explicación: verifica que www resuelve (normalmente vía CNAME a @).
+
+3) dig con respuesta y TTL
+   $ dig depoautoco.com +noall +answer
+   Explicación: muestra el registro con su TTL (tiempo de caché restante), útil para estimar propagación.
+
+4) dig consultando un resolvedor específico (Google DNS)
+   $ dig @8.8.8.8 +short depoautoco.com A
+   Explicación: fuerza la consulta al DNS de Google para comparar con tu resolvedor local.
+
+5) Alternativa con Cloudflare DNS
+   $ dig @1.1.1.1 +short depoautoco.com A
+   Explicación: valida contra otro proveedor público.
+
+6) nslookup (herramienta clásica)
+   $ nslookup depoautoco.com
+   Explicación: muestra el resolvedor usado y la IP resuelta.
+
+7) host (otra utilidad simple)
+   $ host depoautoco.com
+   Explicación: lista los registros asociados al nombre.
+
+8) curl HEAD por HTTP
+   $ curl -I http://depoautoco.com
+   Explicación: comprueba que Nginx responde en 80; si hay redirección, verás un 301/308 a HTTPS.
+
+9) curl HEAD por HTTPS
+   $ curl -I https://depoautoco.com
+   Explicación: valida que hay certificado y respuesta en 443 (después de emitir SSL).
+
+10) ping (solo para verificar resolución de nombre)
+    $ ping -c 1 depoautoco.com
+    Explicación: confirma que el nombre se resuelve; el ICMP puede estar bloqueado aunque el DNS esté bien.
+
+11) Traza de delegación DNS (diagnóstico profundo)
+    $ dig +trace depoautoco.com
+    Explicación: recorre raíz → TLD (.com) → nameservers autoritativos; útil si la propagación parece inconsistente.
+
+Notas:
+- Sustituye depoautoco.com por tu dominio si es necesario.
+- La IP esperada actualmente es 52.87.156.167; cuando cambies a Elastic IP, estos mismos comandos te ayudarán a confirmar el nuevo destino.
+
+

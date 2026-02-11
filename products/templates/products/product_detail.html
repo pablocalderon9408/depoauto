@@ -1,26 +1,62 @@
 {% extends 'base.html' %}
 {% block title %}{{ product.name }}{% endblock %}
+{% block extra_head %}
+<style>
+    /* Mejorar visibilidad de flechas del carrusel sobre fondos claros */
+    #productGallery .carousel-control-prev,
+    #productGallery .carousel-control-next {
+        width: auto;
+        padding: 0;
+        opacity: 1;
+    }
+
+    #productGallery .carousel-control-prev {
+        left: .75rem;
+    }
+
+    #productGallery .carousel-control-next {
+        right: .75rem;
+    }
+
+    #productGallery .carousel-control-prev-icon,
+    #productGallery .carousel-control-next-icon {
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        background-color: rgba(0, 0, 0, 0.35);
+        background-size: 60% 60%;
+        background-position: center;
+        filter: drop-shadow(0 0 3px rgba(0, 0, 0, .25));
+    }
+
+    #productGallery .carousel-control-prev:hover .carousel-control-prev-icon,
+    #productGallery .carousel-control-next:hover .carousel-control-next-icon {
+        background-color: rgba(0, 0, 0, 0.5);
+    }
+</style>
+{% endblock %}
 
 {% block content %}
 <div class="row g-4">
     <div class="col-12 col-lg-6">
-        <div id="productGallery" class="carousel slide" data-bs-ride="carousel">
+        <div id="productGallery" class="carousel slide" data-bs-ride="carousel" data-bs-interval="5000">
             <div class="carousel-inner rounded-3 overflow-hidden shadow">
-                <div class="carousel-item active">
-                    <div class="ratio ratio-4x3">
-                        <img class="img-contain"
-                            src="{{ product.image_url_display|default:'https://picsum.photos/seed/product/900/600' }}"
-                            alt="{{ product.name }}">
-                    </div>
-                </div>
+                {% if product.gallery_images %}
                 {% for img in product.gallery_images %}
-                <div class="carousel-item">
+                <div class="carousel-item {% if forloop.first %}active{% endif %}">
                     <div class="ratio ratio-4x3">
                         <img class="img-contain" src="{{ img.image_url_display }}"
                             alt="{{ img.alt_text|default:product.name }}">
                     </div>
                 </div>
                 {% endfor %}
+                {% else %}
+                <div class="carousel-item active">
+                    <div class="ratio ratio-4x3">
+                        <img class="img-contain" src="{{ product.image_url_display }}" alt="{{ product.name }}">
+                    </div>
+                </div>
+                {% endif %}
             </div>
             <button class="carousel-control-prev" type="button" data-bs-target="#productGallery" data-bs-slide="prev">
                 <span class="carousel-control-prev-icon" aria-hidden="true"></span>
@@ -51,8 +87,7 @@
     <div class="col">
         <div class="card h-100">
             <img class="w-100" style="height: 140px; object-fit: contain; background:#fff;"
-                src="{{ rp.image_url_display|default:'https://picsum.photos/seed/product/600/400' }}"
-                alt="{{ rp.name }}">
+                src="{{ rp.image_url_display }}" alt="{{ rp.name }}">
             <div class="card-body">
                 <h6 class="card-title mb-1">{{ rp.name }}</h6>
                 <div class="d-flex align-items-center justify-content-end">

@@ -1,15 +1,15 @@
 {% extends 'base.html' %}
-{% block title %}Products{% endblock %}
+{% block title %}Productos{% endblock %}
 
 {% block content %}
 <div class="row g-4">
     <aside class="col-12 col-md-3">
         <div class="card">
-            <div class="card-header">Filter by category</div>
+            <div class="card-header">Filtrar por categoría</div>
             <ul class="list-group list-group-flush">
                 <li class="list-group-item {% if not selected_category %}active{% endif %}">
                     <a class="d-block text-decoration-none {% if not selected_category %}text-white{% endif %}"
-                        href="{% url 'product_list' %}">All</a>
+                        href="{% url 'product_list' %}">Todas</a>
                 </li>
                 {% for cat in categories %}
                 <li
@@ -26,12 +26,12 @@
 
     <section class="col-12 col-md-9">
         <div class="d-flex justify-content-between align-items-center mb-3">
-            <h2 class="h5 mb-0">{% if selected_category %}{{ selected_category.name }}{% else %}All products{% endif %}
+            <h2 class="h5 mb-0">{% if selected_category %}{{ selected_category.name }}{% else %}Todos los productos{% endif %}
             </h2>
             <form class="d-flex" method="get">
-                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" name="q"
+                <input class="form-control me-2" type="search" placeholder="Buscar" aria-label="Buscar" name="q"
                     value="{{ query }}">
-                <button class="btn btn-outline-secondary" type="submit">Search</button>
+                <button class="btn btn-outline-secondary" type="submit">Buscar</button>
             </form>
         </div>
 
@@ -48,14 +48,14 @@
                         <h5 class="card-title">{{ p.name }}</h5>
                         <p class="card-text text-muted small">SKU: {{ p.sku }}</p>
                         <div class="d-flex align-items-center justify-content-end">
-                            <a class="btn btn-sm btn-primary" href="{% url 'product_detail' p.slug %}">View</a>
+                            <a class="btn btn-sm btn-primary" href="{% url 'product_detail' p.slug %}">Ver</a>
                         </div>
                     </div>
                 </div>
             </div>
             {% empty %}
             <div class="col-12">
-                <div class="alert alert-info">No products found.</div>
+                <div class="alert alert-info">No se encontraron productos.</div>
             </div>
             {% endfor %}
         </div>
@@ -65,10 +65,10 @@
             <ul class="pagination">
                 {% if page_obj.has_previous %}
                 <li class="page-item"><a class="page-link"
-                        href="?page={{ page_obj.previous_page_number }}{% if query %}&q={{ query }}{% endif %}">Previous</a>
+                        href="?page={{ page_obj.previous_page_number }}{% if query %}&q={{ query }}{% endif %}">Anterior</a>
                 </li>
                 {% else %}
-                <li class="page-item disabled"><span class="page-link">Previous</span></li>
+                <li class="page-item disabled"><span class="page-link">Anterior</span></li>
                 {% endif %}
 
                 {% for i in page_obj.paginator.page_range %}
@@ -83,10 +83,10 @@
 
                 {% if page_obj.has_next %}
                 <li class="page-item"><a class="page-link"
-                        href="?page={{ page_obj.next_page_number }}{% if query %}&q={{ query }}{% endif %}">Next</a>
+                        href="?page={{ page_obj.next_page_number }}{% if query %}&q={{ query }}{% endif %}">Siguiente</a>
                 </li>
                 {% else %}
-                <li class="page-item disabled"><span class="page-link">Next</span></li>
+                <li class="page-item disabled"><span class="page-link">Siguiente</span></li>
                 {% endif %}
             </ul>
         </nav>

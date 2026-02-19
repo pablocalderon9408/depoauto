@@ -60,11 +60,11 @@
             </div>
             <button class="carousel-control-prev" type="button" data-bs-target="#productGallery" data-bs-slide="prev">
                 <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                <span class="visually-hidden">Previous</span>
+                <span class="visually-hidden">Anterior</span>
             </button>
             <button class="carousel-control-next" type="button" data-bs-target="#productGallery" data-bs-slide="next">
                 <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                <span class="visually-hidden">Next</span>
+                <span class="visually-hidden">Siguiente</span>
             </button>
         </div>
     </div>
@@ -72,8 +72,7 @@
     <div class="col-12 col-lg-6">
         <h1 class="h3">{{ product.name }}</h1>
         <p class="text-muted">SKU: {{ product.sku }}</p>
-
-        <p>{{ product.description }}</p>
+        <p>{{ product.description|linebreaksbr }}</p>
         <div class="d-flex gap-2 align-items-center mt-3">
         </div>
     </div>
@@ -81,7 +80,7 @@
 
 <hr class="my-5" />
 
-<h2 class="h5 mb-3">Related products</h2>
+<h2 class="h5 mb-3">Productos relacionados</h2>
 <div class="row row-cols-2 row-cols-md-4 g-3">
     {% for rp in related_products %}
     <div class="col">
@@ -91,14 +90,14 @@
             <div class="card-body">
                 <h6 class="card-title mb-1">{{ rp.name }}</h6>
                 <div class="d-flex align-items-center justify-content-end">
-                    <a class="btn btn-sm btn-primary" href="{% url 'product_detail' rp.slug %}">View</a>
+                    <a class="btn btn-sm btn-primary" href="{% url 'product_detail' rp.slug %}">Ver</a>
                 </div>
             </div>
         </div>
     </div>
     {% empty %}
     <div class="col-12">
-        <div class="alert alert-info">No related products.</div>
+        <div class="alert alert-info">No hay productos relacionados.</div>
     </div>
     {% endfor %}
 </div>

@@ -207,11 +207,11 @@
     </div>
     <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
         <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-        <span class="visually-hidden">Previous</span>
+        <span class="visually-hidden">Anterior</span>
     </button>
     <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
         <span class="carousel-control-next-icon" aria-hidden="true"></span>
-        <span class="visually-hidden">Next</span>
+        <span class="visually-hidden">Siguiente</span>
     </button>
     <div class="carousel-indicators">
         {% if hero_slides %}
@@ -231,8 +231,8 @@
             <div class="card-body">
                 <span class="icon">🚚</span>
                 <div>
-                    <div class="fw-semibold">Fast shipping</div>
-                    <small class="text-muted">Across the country</small>
+                    <div class="fw-semibold">Envíos rápidos</div>
+                    <small class="text-muted">A todo el país</small>
                 </div>
             </div>
         </div>
@@ -242,8 +242,8 @@
             <div class="card-body">
                 <span class="icon">🛡️</span>
                 <div>
-                    <div class="fw-semibold">Secure payments</div>
-                    <small class="text-muted">Trusted gateways</small>
+                    <div class="fw-semibold">Pagos seguros</div>
+                    <small class="text-muted">Pasarelas confiables</small>
                 </div>
             </div>
         </div>
@@ -253,8 +253,8 @@
             <div class="card-body">
                 <span class="icon">⭐</span>
                 <div>
-                    <div class="fw-semibold">Top rated</div>
-                    <small class="text-muted">By our customers</small>
+                    <div class="fw-semibold">Muy valorados</div>
+                    <small class="text-muted">Por nuestros clientes</small>
                 </div>
             </div>
         </div>
@@ -264,8 +264,8 @@
             <div class="card-body">
                 <span class="icon">📦</span>
                 <div>
-                    <div class="fw-semibold">Quality parts</div>
-                    <small class="text-muted">Carefully sourced</small>
+                    <div class="fw-semibold">Repuestos de calidad</div>
+                    <small class="text-muted">Selección cuidadosa</small>
                 </div>
             </div>
         </div>
@@ -275,8 +275,8 @@
 <!-- Top categories with images -->
 {% if show_top_categories %}
 <div class="d-flex align-items-center justify-content-between mb-3">
-    <h2 class="h4 mb-0">Top categories</h2>
-    <a class="btn btn-outline-primary btn-sm" href="{% url 'product_list' %}">View all</a>
+    <h2 class="h4 mb-0">Categorías destacadas</h2>
+    <a class="btn btn-outline-primary btn-sm" href="{% url 'product_list' %}">Ver todo</a>
 </div>
 <div class="row row-cols-2 row-cols-md-3 g-3 mb-5">
     {% for cat in top_categories %}
@@ -301,8 +301,8 @@
 <!-- New arrivals with images -->
 {% if show_new_arrivals %}
 <div class="d-flex align-items-center justify-content-between mb-3">
-    <h2 class="h4 mb-0">New arrivals</h2>
-    <a class="btn btn-outline-primary btn-sm" href="{% url 'product_list' %}">Shop all</a>
+    <h2 class="h4 mb-0">Novedades</h2>
+    <a class="btn btn-outline-primary btn-sm" href="{% url 'product_list' %}">Ver todos</a>
 </div>
 <div class="row row-cols-2 row-cols-md-4 g-3">
     {% for p in featured_products %}
@@ -315,7 +315,7 @@
                 <h5 class="card-title mb-1">{{ p.name }}</h5>
                 <p class="card-text text-muted small mb-2">SKU: {{ p.sku }}</p>
                 <div class="d-flex align-items-center justify-content-end">
-                    <a href="{% url 'product_detail' p.slug %}" class="btn btn-sm btn-primary">View</a>
+                    <a href="{% url 'product_detail' p.slug %}" class="btn btn-sm btn-primary">Ver</a>
                 </div>
             </div>
         </div>
@@ -328,8 +328,7 @@
 </div>
 {% endif %}
 
-{% block contact %}Contact - DepoAuto{% endblock %}
-{% block contact_content %}
+<!-- {% block contact_content %}
 <div class="mb-5">
     <div class="row justify-content-center">
         <div class="col-12 col-lg-10">
@@ -401,6 +400,6 @@
     </div>
 
 </div>
-{% endblock %}
+{% endblock %} -->
 
 {% endblock %}

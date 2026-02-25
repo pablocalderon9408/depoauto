@@ -206,13 +206,16 @@ if USE_S3:
     # Forzar protocolo de URL generado por django-storages (por defecto es https:)
     AWS_S3_URL_PROTOCOL = os.environ.get('AWS_S3_URL_PROTOCOL', 'https:')
 
+    # Cache 7 días para objetos subidos a S3
+    AWS_S3_OBJECT_PARAMETERS = {'CacheControl': 'max-age=604800'}
+
     # Ajustes recomendados para MinIO (endpoint HTTP local y estilo path)
     if AWS_S3_ENDPOINT_URL and AWS_S3_ENDPOINT_URL.startswith('http://'):
         os.environ.setdefault('S3_USE_SIGV4', 'true')
         os.environ.setdefault('AWS_S3_SIGNATURE_VERSION', 's3v4')
 
     STORAGES['default'] = {
-        'BACKEND': 'storages.backends.s3boto3.S3Boto3Storage',
+        'BACKEND': 'depoauto.storage.WebPS3Storage',
     }
 
     # Media URL from custom domain or standard bucket domain

@@ -1,7 +1,31 @@
 from django.contrib import admin
+from django.forms import ModelForm, PasswordInput
 from django.shortcuts import redirect
 from django.urls import reverse
 from .models import Category, Product, ProductVariant, VariantImage, RelatedProduct, SiteConfig, HeroSlide
+
+
+class SiteConfigForm(ModelForm):
+    class Meta:
+        model = SiteConfig
+        fields = "__all__"
+        widgets = {
+            "email_smtp_password": PasswordInput(attrs={"autocomplete": "new-password", "placeholder": "Dejar vacío para mantener la actual"}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if self.instance and self.instance.pk:
+            self.fields["email_smtp_password"].required = False
+
+    def save(self, commit=True):
+        obj = super().save(commit=False)
+        # No sobrescribir la contraseña si el usuario dejó el campo vacío
+        if not self.cleaned_data.get("email_smtp_password") and obj.pk:
+            obj.email_smtp_password = SiteConfig.objects.get(pk=obj.pk).email_smtp_password
+        if commit:
+            obj.save()
+        return obj
 
 
 @admin.register(Category)
@@ -59,6 +83,7 @@ class ProductVariantAdmin(admin.ModelAdmin):
 
 @admin.register(SiteConfig)
 class SiteConfigAdmin(admin.ModelAdmin):
+    form = SiteConfigForm
     inlines = []
     fieldsets = (
         ("Carrusel - Slide 1", {"fields": ("hero_title_1", "hero_subtitle_1", "hero_image_1_url", "hero_image_1_file", "hero_cta_1_label", "hero_cta_1_url")}),
@@ -72,6 +97,8 @@ class SiteConfigAdmin(admin.ModelAdmin):
             "show_new_arrivals", "home_new_arrivals_title", "home_new_arrivals_limit",
             "home_new_arrivals_cta_label", "home_new_arrivals_cta_url",
         )}),
+        ("Contacto / WhatsApp", {"fields": ("contact_phone", "whatsapp_prefill")}),
+        ("Email (formulario de contacto)", {"fields": ("contact_email", "email_smtp_user", "email_smtp_password")}),
     )
     def has_add_permission(self, request):
         return not SiteConfig.objects.exists()

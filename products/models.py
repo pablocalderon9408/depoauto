@@ -214,6 +214,25 @@ class SiteConfig(models.Model):
     home_new_arrivals_cta_label = models.CharField(max_length=60, default="Shop all")
     home_new_arrivals_cta_url = models.CharField(max_length=200, default="/products/")
 
+    # Contacto / WhatsApp
+    contact_phone = models.CharField(max_length=20, blank=True, help_text="Número en formato internacional, ej. 573192333702")
+    whatsapp_prefill = models.CharField(max_length=200, blank=True, default="Quiero una asesoría en sus productos")
+
+    # Email (formulario de contacto)
+    contact_email = models.EmailField(
+        blank=True,
+        help_text="Correo donde se reciben los mensajes del formulario de contacto",
+    )
+    email_smtp_user = models.EmailField(
+        blank=True,
+        help_text="Cuenta Gmail desde la que se envía (ej: micuenta@gmail.com). Si está vacío, se usa EMAIL_HOST_USER de settings.",
+    )
+    email_smtp_password = models.CharField(
+        max_length=120,
+        blank=True,
+        help_text="Contraseña de aplicación de Gmail. Crear en: Cuenta Google → Seguridad → Contraseñas de aplicaciones. Si está vacío, se usa EMAIL_HOST_PASSWORD de settings.",
+    )
+
     class Meta:
         verbose_name = "Site configuration"
         verbose_name_plural = "Site configuration"

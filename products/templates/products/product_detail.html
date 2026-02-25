@@ -1,59 +1,55 @@
 {% extends 'base.html' %}
-{% block title %}{{ product.name }}{% endblock %}
+{% block title %}{{ product.name }} — depoauto{% endblock %}
+
 {% block extra_head %}
 <style>
-    /* Mejorar visibilidad de flechas del carrusel sobre fondos claros */
     #productGallery .carousel-control-prev,
     #productGallery .carousel-control-next {
-        width: auto;
-        padding: 0;
+        width: 44px;
+        height: 44px;
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 50%;
+        top: 50%;
+        transform: translateY(-50%);
         opacity: 1;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     }
 
     #productGallery .carousel-control-prev {
-        left: .75rem;
+        left: 0.75rem;
     }
 
     #productGallery .carousel-control-next {
-        right: .75rem;
+        right: 0.75rem;
     }
 
     #productGallery .carousel-control-prev-icon,
     #productGallery .carousel-control-next-icon {
-        width: 44px;
-        height: 44px;
-        border-radius: 50%;
-        background-color: rgba(0, 0, 0, 0.35);
-        background-size: 60% 60%;
-        background-position: center;
-        filter: drop-shadow(0 0 3px rgba(0, 0, 0, .25));
-    }
-
-    #productGallery .carousel-control-prev:hover .carousel-control-prev-icon,
-    #productGallery .carousel-control-next:hover .carousel-control-next-icon {
-        background-color: rgba(0, 0, 0, 0.5);
+        filter: invert(1);
+        opacity: 0.8;
     }
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="row g-4">
+<div class="row g-4 mb-5">
     <div class="col-12 col-lg-6">
-        <div id="productGallery" class="carousel slide" data-bs-ride="carousel" data-bs-interval="5000">
-            <div class="carousel-inner rounded-3 overflow-hidden shadow">
+        <div id="productGallery" class="carousel slide rounded-3 overflow-hidden shadow" data-bs-ride="carousel">
+            <div class="carousel-inner bg-light">
                 {% if product.gallery_images %}
                 {% for img in product.gallery_images %}
                 <div class="carousel-item {% if forloop.first %}active{% endif %}">
-                    <div class="ratio ratio-4x3">
+                    <div class="ratio ratio-4x3 img-reserve">
                         <img class="img-contain" src="{{ img.image_url_display }}"
-                            alt="{{ img.alt_text|default:product.name }}">
+                            alt="{{ img.alt_text|default:product.name }}" loading="eager" width="600" height="450">
                     </div>
                 </div>
                 {% endfor %}
                 {% else %}
                 <div class="carousel-item active">
-                    <div class="ratio ratio-4x3">
-                        <img class="img-contain" src="{{ product.image_url_display }}" alt="{{ product.name }}">
+                    <div class="ratio ratio-4x3 img-reserve">
+                        <img class="img-contain" src="{{ product.image_url_display }}" alt="{{ product.name }}"
+                            loading="eager" width="600" height="450">
                     </div>
                 </div>
                 {% endif %}
@@ -70,34 +66,41 @@
     </div>
 
     <div class="col-12 col-lg-6">
-        <h1 class="h3">{{ product.name }}</h1>
-        <p class="text-muted">SKU: {{ product.sku }}</p>
-        <p>{{ product.description|linebreaksbr }}</p>
-        <div class="d-flex gap-2 align-items-center mt-3">
+        <p class="text-muted small mb-1">SKU: {{ product.sku }}</p>
+        <h1 class="page-header-depo mb-3">{{ product.name }}</h1>
+        <div class="product-description text-muted mb-4">
+            {{ product.description|linebreaksbr }}
         </div>
+        {% with phone=site_config.contact_phone|default:"573192333702"
+        prefill=site_config.whatsapp_prefill|default:"Quiero una asesoría en sus productos" %}
+        <a href="https://wa.me/{{ phone }}?text={{ prefill|urlencode }}%20-%20{{ product.name|urlencode }}%20(SKU:%20{{ product.sku }})"
+            target="_blank" rel="noopener" class="btn btn-depo-primary btn-lg">
+            Consultar por WhatsApp
+        </a>
+        {% endwith %}
     </div>
 </div>
 
 <hr class="my-5" />
 
-<h2 class="h5 mb-3">Productos relacionados</h2>
+<h2 class="section-header mb-4">Productos relacionados</h2>
 <div class="row row-cols-2 row-cols-md-4 g-3">
     {% for rp in related_products %}
     <div class="col">
-        <div class="card h-100">
-            <img class="w-100" style="height: 140px; object-fit: contain; background:#fff;"
-                src="{{ rp.image_url_display }}" alt="{{ rp.name }}">
-            <div class="card-body">
-                <h6 class="card-title mb-1">{{ rp.name }}</h6>
-                <div class="d-flex align-items-center justify-content-end">
-                    <a class="btn btn-sm btn-primary" href="{% url 'product_detail' rp.slug %}">Ver</a>
-                </div>
+        <div class="card card-depo h-100">
+            <div class="ratio ratio-4x3 overflow-hidden bg-light img-reserve">
+                <img class="product-img-depo" src="{{ rp.image_url_display }}" alt="{{ rp.name }}" loading="eager"
+                    width="400" height="300">
+            </div>
+            <div class="card-body d-flex flex-column">
+                <h6 class="card-title flex-grow-1">{{ rp.name }}</h6>
+                <a href="{% url 'product_detail' rp.slug %}" class="btn btn-depo-primary btn-sm w-100 mt-auto">Ver</a>
             </div>
         </div>
     </div>
     {% empty %}
     <div class="col-12">
-        <div class="alert alert-info">No hay productos relacionados.</div>
+        <p class="text-muted">No hay productos relacionados.</p>
     </div>
     {% endfor %}
 </div>

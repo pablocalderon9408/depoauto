@@ -65,6 +65,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'products.context_processors.site_config',
             ],
         },
     },
@@ -132,21 +133,52 @@ STORAGES = {
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
-# # Email settings
-# if DEBUG:
-#     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-# else:
-#     EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-
+# Email
+# Proveedores: mailpit (local), gmail, mailgun, outlook (ver EMAIL_PROVIDER)
+# SiteConfig (contact_email, email_smtp_user, email_smtp_password) tiene prioridad sobre estos valores
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = os.environ.get('EMAIL_HOST', 'smtp.gmail.com')
-EMAIL_PORT = int(os.environ.get('EMAIL_PORT', '587'))
-EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', 'pablocalderon9408@gmail.com')
-EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', 'rtcl wubw rcax wezq')
-EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS', 'true').lower() in ('1', 'true', 'yes')
-EMAIL_USE_SSL = os.environ.get('EMAIL_USE_SSL', 'false').lower() in ('1', 'true', 'yes')
-DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', EMAIL_HOST_USER or 'pablocalderon9408@gmail.com')
-CONTACT_EMAIL = 'pablocalderon9408@gmail.com'
+EMAIL_PROVIDER = os.environ.get('EMAIL_PROVIDER', 'gmail').lower()
+
+if EMAIL_PROVIDER == 'mailpit':
+    # Mailpit: captura correos localmente. Web UI en http://localhost:8025
+    EMAIL_HOST = os.environ.get('EMAIL_HOST', 'mailpit')
+    EMAIL_PORT = int(os.environ.get('EMAIL_PORT', '1025'))
+    EMAIL_HOST_USER = ''
+    EMAIL_HOST_PASSWORD = ''
+    EMAIL_USE_TLS = False
+    EMAIL_USE_SSL = False
+    DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', 'noreply@depoauto.local')
+elif EMAIL_PROVIDER == 'mailgun':
+    # Mailgun: https://documentation.mailgun.com/docs/mailgun/user-manual/sending-messages/send-smtp
+    # Región: US (smtp.mailgun.org) o EU (smtp.eu.mailgun.org)
+    _MAILGUN_REGION = os.environ.get('MAILGUN_REGION', 'us').lower()
+    _MAILGUN_SMTP = 'smtp.mailgun.org' if _MAILGUN_REGION == 'us' else 'smtp.eu.mailgun.org'
+    EMAIL_HOST = os.environ.get('EMAIL_HOST', _MAILGUN_SMTP)
+    EMAIL_PORT = int(os.environ.get('EMAIL_PORT', '587'))
+    EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', '')  # postmaster@sandboxXXX.mailgun.org
+    EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', '')
+    EMAIL_USE_TLS = True
+    EMAIL_USE_SSL = False
+    DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', EMAIL_HOST_USER or 'noreply@depoauto.com')
+elif EMAIL_PROVIDER == 'gmail':
+    EMAIL_HOST = os.environ.get('EMAIL_HOST', 'smtp.gmail.com')
+    EMAIL_PORT = int(os.environ.get('EMAIL_PORT', '587'))
+    EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', '')
+    EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', '')
+    EMAIL_USE_TLS = True
+    EMAIL_USE_SSL = False
+    DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', EMAIL_HOST_USER or '')
+else:
+    # outlook / hotmail (requiere OAuth2; app passwords ya no disponibles para cuentas personales)
+    EMAIL_HOST = os.environ.get('EMAIL_HOST', 'smtp-mail.outlook.com')
+    EMAIL_PORT = int(os.environ.get('EMAIL_PORT', '587'))
+    EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', '')
+    EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', '')
+    EMAIL_USE_TLS = True
+    EMAIL_USE_SSL = False
+    DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', EMAIL_HOST_USER or '')
+
+CONTACT_EMAIL = os.environ.get('CONTACT_EMAIL', 'pablocalderon94@hotmail.com')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field

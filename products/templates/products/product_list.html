@@ -1,71 +1,67 @@
 {% extends 'base.html' %}
-{% block title %}Productos{% endblock %}
+{% block title %}Productos — DepoAuto{% endblock %}
 
 {% block content %}
 <div class="row g-4">
     <aside class="col-12 col-md-3">
-        <div class="card">
-            <div class="card-header">Filtrar por categoría</div>
+        <div class="sidebar-depo card">
+            <div class="card-header bg-white border-bottom py-3 fw-semibold">Filtrar por categoría</div>
             <ul class="list-group list-group-flush">
                 <li class="list-group-item {% if not selected_category %}active{% endif %}">
-                    <a class="d-block text-decoration-none {% if not selected_category %}text-white{% endif %}"
-                        href="{% url 'product_list' %}">Todas</a>
+                    <a href="{% url 'product_list' %}">Todas</a>
                 </li>
                 {% for cat in categories %}
-                <li
-                    class="list-group-item {% if selected_category and selected_category.id == cat.id %}active{% endif %}">
-                    <a class="d-block text-decoration-none {% if selected_category and selected_category.id == cat.id %}text-white{% endif %}"
-                        href="{% url 'product_list_by_category' cat.slug %}">{{ cat.name }}</a>
+                <li class="list-group-item {% if selected_category and selected_category.id == cat.id %}active{% endif %}">
+                    <a href="{% url 'product_list_by_category' cat.slug %}">{{ cat.name }}</a>
                 </li>
                 {% endfor %}
             </ul>
         </div>
-
-        
     </aside>
 
     <section class="col-12 col-md-9">
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <h2 class="h5 mb-0">{% if selected_category %}{{ selected_category.name }}{% else %}Todos los productos{% endif %}
-            </h2>
-            <form class="d-flex" method="get">
-                <input class="form-control me-2" type="search" placeholder="Buscar" aria-label="Buscar" name="q"
-                    value="{{ query }}">
-                <button class="btn btn-outline-secondary" type="submit">Buscar</button>
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3 mb-4">
+            <h1 class="section-header mb-0">
+                {% if selected_category %}{{ selected_category.name }}{% else %}Todos los productos{% endif %}
+            </h1>
+            <form class="search-depo d-flex w-100 w-md-auto" method="get">
+                <input class="form-control me-2" type="search" placeholder="Buscar productos..." name="q" value="{{ query }}">
+                <button class="btn btn-depo-primary" type="submit">Buscar</button>
             </form>
         </div>
 
-        <div class="row row-cols-2 row-cols-md-3 g-3 mb-3">
+        <div class="row row-cols-2 row-cols-md-3 g-3 mb-4">
             {% for p in page_obj %}
             <div class="col">
-                <div class="card h-100">
-                    <div class="ratio ratio-4x3">
-                        <img class="img-contain"
-                            src="{{ p.image_url_display }}"
-                            alt="{{ p.name }}">
+                <div class="card card-depo h-100">
+                    <div class="ratio ratio-4x3 overflow-hidden bg-light img-reserve">
+                        <img class="product-img-depo" src="{{ p.image_url_display }}" alt="{{ p.name }}" loading="eager" width="400" height="300">
                     </div>
-                    <div class="card-body">
+                    <div class="card-body d-flex flex-column">
                         <h5 class="card-title">{{ p.name }}</h5>
-                        <p class="card-text text-muted small">SKU: {{ p.sku }}</p>
-                        <div class="d-flex align-items-center justify-content-end">
-                            <a class="btn btn-sm btn-primary" href="{% url 'product_detail' p.slug %}">Ver</a>
-                        </div>
+                        <p class="card-text text-muted small mb-2">SKU: {{ p.sku }}</p>
+                        <a href="{% url 'product_detail' p.slug %}" class="btn btn-depo-primary btn-sm w-100 mt-auto">Ver producto</a>
                     </div>
                 </div>
             </div>
             {% empty %}
             <div class="col-12">
-                <div class="alert alert-info">No se encontraron productos.</div>
+                <div class="card card-depo">
+                    <div class="card-body text-center py-5">
+                        <p class="text-muted mb-0">No se encontraron productos.</p>
+                        <a href="{% url 'product_list' %}" class="btn btn-depo-outline mt-3">Ver todos</a>
+                    </div>
+                </div>
             </div>
             {% endfor %}
         </div>
 
         {% if page_obj.has_other_pages %}
-        <nav aria-label="Page navigation">
-            <ul class="pagination">
+        <nav aria-label="Paginación" class="d-flex justify-content-center">
+            <ul class="pagination pagination-depo">
                 {% if page_obj.has_previous %}
-                <li class="page-item"><a class="page-link"
-                        href="?page={{ page_obj.previous_page_number }}{% if query %}&q={{ query }}{% endif %}">Anterior</a>
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if query %}&q={{ query }}{% endif %}">Anterior</a>
                 </li>
                 {% else %}
                 <li class="page-item disabled"><span class="page-link">Anterior</span></li>
@@ -73,17 +69,15 @@
 
                 {% for i in page_obj.paginator.page_range %}
                 {% if page_obj.number == i %}
-                <li class="page-item active" aria-current="page"><span class="page-link">{{i}}</span></li>
+                <li class="page-item active" aria-current="page"><span class="page-link">{{ i }}</span></li>
                 {% else %}
-                <li class="page-item"><a class="page-link"
-                        href="?page={{ i }}{% if query %}&q={{ query }}{% endif %}">{{i}}</a>
-                </li>
+                <li class="page-item"><a class="page-link" href="?page={{ i }}{% if query %}&q={{ query }}{% endif %}">{{ i }}</a></li>
                 {% endif %}
                 {% endfor %}
 
                 {% if page_obj.has_next %}
-                <li class="page-item"><a class="page-link"
-                        href="?page={{ page_obj.next_page_number }}{% if query %}&q={{ query }}{% endif %}">Siguiente</a>
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if query %}&q={{ query }}{% endif %}">Siguiente</a>
                 </li>
                 {% else %}
                 <li class="page-item disabled"><span class="page-link">Siguiente</span></li>

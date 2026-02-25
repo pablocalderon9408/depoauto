@@ -1,206 +1,46 @@
 {% extends 'base.html' %}
 {% load static %}
-{% block title %}DepoAuto - Home{% endblock %}
+{% block title %}depoauto — Repuestos y accesorios{% endblock %}
 
 {% block extra_head %}
 <style>
-    .hero-img {
-        height: 420px;
-        object-fit: contain;
-        object-position: center center;
-        background-color: #000;
-        /* evita "huecos" visibles en fondos claros */
+    .hero-depo .carousel-caption {
+        text-align: left;
     }
 
-    .category-card {
-        position: relative;
-        aspect-ratio: 1 / 1;
-        background-size: cover;
-        background-position: center;
-        border-radius: .5rem;
-        overflow: hidden;
-    }
-
-    .category-card::after {
-        content: "";
-        position: absolute;
-        inset: 0;
-        background: linear-gradient(180deg, rgba(0, 0, 0, 0.15), rgba(0, 0, 0, 0.55));
-    }
-
-    .category-card h5 {
-        position: absolute;
-        bottom: 10px;
-        left: 12px;
-        color: #fff;
-        margin: 0;
-        z-index: 1;
-    }
-
-    .hover-zoom {
-        transition: transform .25s ease, box-shadow .25s ease;
-    }
-
-    .hover-zoom:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 .5rem 1rem rgba(0, 0, 0, .15);
-    }
-
-    .product-img {
-        height: 160px;
-        object-fit: cover;
-        border-top-left-radius: .5rem;
-        border-top-right-radius: .5rem;
-    }
-
-    @media (min-width: 992px) {
-        .hero-img {
-            height: 520px;
+    @media (max-width: 767px) {
+        .hero-depo .carousel-caption {
+            text-align: center;
         }
-
-        .product-img {
-            height: 190px;
-        }
-    }
-
-    .badge-glow {
-        box-shadow: 0 0 0.75rem rgba(13, 110, 253, .5);
-    }
-
-    .carousel-caption {
-        text-shadow: 0 2px 10px rgba(0, 0, 0, .4);
-    }
-
-    /* Ensure hero caption is perfectly centered horizontally */
-    .hero-caption {
-        left: 0;
-        right: 0;
-    }
-
-    .btn-gradient {
-        background: linear-gradient(90deg, #0d6efd, #00a3ff);
-        border: none;
-    }
-
-    .btn-gradient:hover {
-        filter: brightness(.95);
-    }
-
-    .mini-kpis .card {
-        border: 0;
-    }
-
-    .mini-kpis .card-body {
-        display: flex;
-        align-items: center;
-        gap: .75rem;
-    }
-
-    .mini-kpis .icon {
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        background: #f1f5ff;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        color: #0d6efd;
-    }
-
-    /* Contact glass styles */
-    .contact-gradient {
-        background: radial-gradient(120% 120% at 0% 0%, rgba(88, 28, 135, 0.25), transparent 60%),
-            radial-gradient(120% 120% at 100% 0%, rgba(30, 64, 175, 0.25), transparent 60%),
-            linear-gradient(135deg, rgba(15, 15, 28, 0.05), rgba(15, 15, 28, 0.08));
-        border-radius: 1.5rem;
-    }
-
-    .glass-card {
-        background: rgba(17, 25, 40, 0.6);
-        border: 1px solid rgba(255, 255, 255, 0.15);
-        -webkit-backdrop-filter: blur(10px);
-        backdrop-filter: blur(10px);
-        border-radius: 1rem;
-        box-shadow: 0 20px 40px rgba(2, 6, 23, 0.25);
-        color: #fff;
-    }
-
-    .input-icon-wrap {
-        position: relative;
-    }
-
-    .input-icon-wrap .icon {
-        position: absolute;
-        left: 14px;
-        top: 50%;
-        transform: translateY(-50%);
-        color: rgba(255, 255, 255, 0.6);
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    .glass-input {
-        padding-left: 46px;
-        background: rgba(0, 0, 0, 0.2);
-        border: 1px solid rgba(148, 163, 184, 0.6);
-        color: #fff;
-        border-radius: .75rem;
-    }
-
-    .glass-input::placeholder {
-        color: rgba(255, 255, 255, 0.6);
-    }
-
-    .glass-input:focus {
-        border-color: #a78bfa;
-        box-shadow: 0 0 0 .2rem rgba(167, 139, 250, 0.3);
-        color: #fff;
-    }
-
-    .btn-glass-submit {
-        background: #fff;
-        color: #000;
-        font-weight: 700;
-        border-radius: .75rem;
-        transition: transform .12s ease, box-shadow .2s ease, background .2s ease;
-    }
-
-    .btn-glass-submit:hover {
-        background: #f3f4f6;
-        transform: scale(1.01);
-        box-shadow: 0 10px 20px rgba(2, 6, 23, .15);
-    }
-
-    .text-soft {
-        color: #94a3b8;
     }
 </style>
 {% endblock %}
 
 {% block content %}
-<!-- Hero carousel -->
-<div id="heroCarousel" class="carousel slide mb-5" data-bs-ride="carousel">
-    <div class="carousel-inner rounded-3 overflow-hidden shadow">
+<!-- Hero -->
+<div id="heroCarousel" class="carousel slide hero-depo mb-5" data-bs-ride="carousel">
+    <div class="carousel-inner">
         {% if hero_slides %}
         {% for s in hero_slides %}
         <div class="carousel-item {% if forloop.first %}active{% endif %}">
-            <img class="w-100 hero-img" src="{{ s.image_url_display }}" alt="{{ s.title|default:'Hero' }}">
-            <div class="carousel-caption d-none d-md-block text-center hero-caption">
-                {% if s.title %}<h2 class="display-6 fw-bold">{{ s.title }}</h2>{% endif %}
-                {% if s.subtitle %}<p class="lead">{{ s.subtitle }}</p>{% endif %}
-                <a href="{{ s.cta_url }}" class="btn btn-gradient btn-lg">{{ s.cta_label|default:'Ver productos' }}</a>
+            <img class="w-100 d-block" src="{{ s.image_url_display }}" alt="{{ s.title|default:'Hero' }}"
+                loading="eager" fetchpriority="high" width="1600" height="600">
+            <div class="carousel-caption d-none d-md-block">
+                {% if s.title %}<h2>{{ s.title }}</h2>{% endif %}
+                {% if s.subtitle %}<p class="lead mb-3">{{ s.subtitle }}</p>{% endif %}
+                <a href="{{ s.cta_url }}" class="btn btn-hero">{{ s.cta_label|default:'Ver productos' }}</a>
             </div>
         </div>
         {% endfor %}
         {% else %}
         <div class="carousel-item active">
-            <img class="w-100 hero-img" src="https://picsum.photos/seed/hero-fallback/1600/600" alt="Hero">
-            <div class="carousel-caption d-none d-md-block text-center hero-caption">
-                <span class="badge bg-primary badge-glow mb-2">Bienvenido</span>
-                <h2 class="display-6 fw-bold">Repuestos y accesorios</h2>
-                <p class="lead">Calidad para tu vehículo.</p>
-                <a href="{% url 'product_list' %}" class="btn btn-gradient btn-lg">Ver productos</a>
+            <img class="w-100 d-block" src="https://picsum.photos/seed/hero-fallback/1600/600" alt="DepoAuto"
+                loading="eager" fetchpriority="high" width="1600" height="600">
+            <div class="carousel-caption d-none d-md-block">
+                <span class="badge bg-warning text-dark mb-2 px-3 py-2">Bienvenido</span>
+                <h2>Repuestos y accesorios</h2>
+                <p class="lead mb-3">Calidad para tu vehículo. Más de 30 años de experiencia.</p>
+                <a href="{% url 'product_list' %}" class="btn btn-hero">Ver productos</a>
             </div>
         </div>
         {% endif %}
@@ -213,193 +53,108 @@
         <span class="carousel-control-next-icon" aria-hidden="true"></span>
         <span class="visually-hidden">Siguiente</span>
     </button>
+    {% if hero_slides %}
     <div class="carousel-indicators">
-        {% if hero_slides %}
         {% for s in hero_slides %}
         <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="{{ forloop.counter0 }}"
-            class="{% if forloop.first %}active{% endif %}" aria-current="true"
-            aria-label="Slide {{ forloop.counter }}"></button>
+            class="{% if forloop.first %}active{% endif %}" aria-label="Slide {{ forloop.counter }}"></button>
         {% endfor %}
-        {% endif %}
     </div>
+    {% endif %}
 </div>
 
-<!-- Mini KPIs -->
-<div class="mini-kpis row row-cols-2 row-cols-md-4 g-3 mb-5">
+<!-- KPIs -->
+<div class="row row-cols-2 row-cols-md-4 g-3 mb-5">
     <div class="col">
-        <div class="card h-100">
-            <div class="card-body">
-                <span class="icon">🚚</span>
-                <div>
-                    <div class="fw-semibold">Envíos rápidos</div>
-                    <small class="text-muted">A todo el país</small>
-                </div>
+        <div class="kpi-depo d-flex align-items-center gap-3">
+            <span class="kpi-icon">🚚</span>
+            <div>
+                <div class="kpi-title">Envíos rápidos</div>
+                <div class="kpi-sub">A todo el país</div>
             </div>
         </div>
     </div>
     <div class="col">
-        <div class="card h-100">
-            <div class="card-body">
-                <span class="icon">🛡️</span>
-                <div>
-                    <div class="fw-semibold">Pagos seguros</div>
-                    <small class="text-muted">Pasarelas confiables</small>
-                </div>
+        <div class="kpi-depo d-flex align-items-center gap-3">
+            <span class="kpi-icon">🛡️</span>
+            <div>
+                <div class="kpi-title">Pagos seguros</div>
+                <div class="kpi-sub">Pasarelas confiables</div>
             </div>
         </div>
     </div>
     <div class="col">
-        <div class="card h-100">
-            <div class="card-body">
-                <span class="icon">⭐</span>
-                <div>
-                    <div class="fw-semibold">Muy valorados</div>
-                    <small class="text-muted">Por nuestros clientes</small>
-                </div>
+        <div class="kpi-depo d-flex align-items-center gap-3">
+            <span class="kpi-icon">⭐</span>
+            <div>
+                <div class="kpi-title">Muy valorados</div>
+                <div class="kpi-sub">Por nuestros clientes</div>
             </div>
         </div>
     </div>
     <div class="col">
-        <div class="card h-100">
-            <div class="card-body">
-                <span class="icon">📦</span>
-                <div>
-                    <div class="fw-semibold">Repuestos de calidad</div>
-                    <small class="text-muted">Selección cuidadosa</small>
-                </div>
+        <div class="kpi-depo d-flex align-items-center gap-3">
+            <span class="kpi-icon">📦</span>
+            <div>
+                <div class="kpi-title">Repuestos de calidad</div>
+                <div class="kpi-sub">Selección cuidadosa</div>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Top categories with images -->
+<!-- Categorías -->
 {% if show_top_categories %}
 <div class="d-flex align-items-center justify-content-between mb-3">
-    <h2 class="h4 mb-0">Categorías destacadas</h2>
-    <a class="btn btn-outline-primary btn-sm" href="{% url 'product_list' %}">Ver todo</a>
+    <h2 class="section-header mb-0">Categorías destacadas</h2>
+    <a class="btn btn-depo-outline btn-sm" href="{% url 'product_list' %}">Ver todo</a>
 </div>
 <div class="row row-cols-2 row-cols-md-3 g-3 mb-5">
     {% for cat in top_categories %}
     <div class="col">
         <a href="{% url 'product_list_by_category' cat.slug %}" class="text-decoration-none">
-            <div class="category-card hover-zoom" {% if cat.image_url_display%}
-                style="background-image: url('{{ cat.image_url_display }}')" {% endif %}>
-                <h5>{{ cat.name }}</h5>
+            <div class="category-depo" {% if cat.image_url_display%}
+                style="background-image: url('{{ cat.image_url_display }}')" {% else%}
+                style="background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%)" {% endif %}>
+                <span>{{ cat.name }}</span>
             </div>
         </a>
     </div>
     {% empty %}
-    <div class="col">
-        <div class="alert alert-info">No categories yet.</div>
+    <div class="col-12">
+        <div class="alert alert-info">No hay categorías aún.</div>
     </div>
     {% endfor %}
 </div>
 {% endif %}
 
-
-
-<!-- New arrivals with images -->
+<!-- Novedades -->
 {% if show_new_arrivals %}
 <div class="d-flex align-items-center justify-content-between mb-3">
-    <h2 class="h4 mb-0">Novedades</h2>
-    <a class="btn btn-outline-primary btn-sm" href="{% url 'product_list' %}">Ver todos</a>
+    <h2 class="section-header mb-0">Novedades</h2>
+    <a class="btn btn-depo-outline btn-sm" href="{% url 'product_list' %}">Ver todos</a>
 </div>
 <div class="row row-cols-2 row-cols-md-4 g-3">
     {% for p in featured_products %}
     <div class="col">
-        <div class="card h-100 hover-zoom">
-            <div class="ratio ratio-4x3">
-                <img class="img-contain" src="{{ p.image_url_display }}" alt="{{ p.name }}">
+        <div class="card card-depo h-100">
+            <div class="ratio ratio-4x3 overflow-hidden bg-light img-reserve">
+                <img class="product-img-depo" src="{{ p.image_url_display }}" alt="{{ p.name }}" loading="eager"
+                    width="400" height="300">
             </div>
-            <div class="card-body">
-                <h5 class="card-title mb-1">{{ p.name }}</h5>
+            <div class="card-body d-flex flex-column">
+                <h5 class="card-title">{{ p.name }}</h5>
                 <p class="card-text text-muted small mb-2">SKU: {{ p.sku }}</p>
-                <div class="d-flex align-items-center justify-content-end">
-                    <a href="{% url 'product_detail' p.slug %}" class="btn btn-sm btn-primary">Ver</a>
-                </div>
+                <a href="{% url 'product_detail' p.slug %}" class="btn btn-depo-primary btn-sm w-100 mt-auto">Ver
+                    producto</a>
             </div>
         </div>
     </div>
     {% empty %}
-    <div class="col">
-        <div class="alert alert-info">No products yet.</div>
+    <div class="col-12">
+        <div class="alert alert-info">No hay productos aún.</div>
     </div>
     {% endfor %}
 </div>
 {% endif %}
-
-<!-- {% block contact_content %}
-<div class="mb-5">
-    <div class="row justify-content-center">
-        <div class="col-12 col-lg-10">
-            <div class="contact-gradient p-4 p-md-5">
-                <div class="row align-items-center">
-                    <div class="col-lg-6 text-center text-lg-start mb-4 mb-lg-0">
-                        <h1 class="h3 h-lg-2 mb-3" style="font-weight:800; letter-spacing:-0.02em;">Aumenta la
-                            productividad de tu equipo</h1>
-                        <p class="mb-0 text-soft">Reduce tiempos de respuesta y escala tu negocio con nuestra atención
-                            personalizada.</p>
-                    </div>
-                    <div class="col-lg-6">
-                        {% if messages %}
-                        {% for m in messages %}
-                        <div class="alert alert-{{ m.tags }}">{{ m }}</div>
-                        {% endfor %}
-                        {% endif %}
-                        <div class="glass-card p-4 p-md-5">
-                            <form method="post" action="{% url 'contact' %}" class="vstack gap-3">
-                                {% csrf_token %}
-                                <div class="input-icon-wrap">
-                                    <span class="icon">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
-                                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                            stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user">
-                                            <path d="M20 21a8 8 0 0 0-16 0" />
-                                            <circle cx="12" cy="7" r="4" />
-                                        </svg>
-                                    </span>
-                                    <input type="text" name="name" class="form-control glass-input py-3"
-                                        placeholder="Tu nombre completo" required />
-                                </div>
-                                <div class="input-icon-wrap">
-                                    <span class="icon">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
-                                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                            stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-mail">
-                                            <rect width="20" height="16" x="2" y="4" rx="2" />
-                                            <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
-                                        </svg>
-                                    </span>
-                                    <input type="email" name="email" class="form-control glass-input py-3"
-                                        placeholder="tucorreo@ejemplo.com" required />
-                                </div>
-                                <div class="input-icon-wrap">
-                                    <span class="icon" style="top: 18px;">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
-                                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                            stroke-linecap="round" stroke-linejoin="round"
-                                            class="lucide lucide-message-square-text">
-                                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-                                            <path d="M13 8H7" />
-                                            <path d="M17 12H7" />
-                                        </svg>
-                                    </span>
-                                    <textarea name="message" rows="4" class="form-control glass-input"
-                                        placeholder="Cuéntanos cómo podemos ayudarte" required></textarea>
-                                </div>
-                                <button type="submit" class="btn btn-glass-submit w-100 py-3">SOLICITAR
-                                    CONTACTO</button>
-                                <p class="text-center text-soft small mb-0">Al enviar este formulario, aceptas que nos
-                                    pongamos en contacto contigo para mostrarte cómo DepoAuto puede ayudarte.</p>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-</div>
-{% endblock %} -->
-
 {% endblock %}

@@ -8,7 +8,7 @@ SU_USERNAME ?= pablo.calderon
 SU_EMAIL ?= pcs@e.com
 SU_PASSWORD ?= junio806P
 
-.PHONY: help up down down-hard logs build shell web db minio createsuperuser createsuperuser-auto makemigrations migrate collectstatic seed flush restart up-prod down-prod logs-prod build-prod shell-prod createsuperuser-prod migrate-prod seed-prod
+.PHONY: help up down down-hard logs build shell web db minio createsuperuser createsuperuser-auto makemigrations migrate collectstatic seed backup flush restart up-prod down-prod logs-prod build-prod shell-prod createsuperuser-prod migrate-prod seed-prod
 
 help:
 	@echo "Targets disponibles:"
@@ -26,6 +26,7 @@ help:
 	@echo "  migrate           - Django migrate"
 	@echo "  collectstatic     - Django collectstatic"
 	@echo "  seed              - Ejecuta seed de productos"
+	@echo "  backup            - Backup de la DB a S3 (o local)"
 	@echo "  flush             - Django flush (con noinput)"
 	@echo "  restart           - Reinicia el servicio web"
 	@echo "  up-prod           - Levanta servicios de producción (sin MinIO)"
@@ -37,8 +38,11 @@ help:
 	@echo "  migrate-prod      - Django migrate (prod)"
 	@echo "  seed-prod         - Ejecuta seed de productos (prod)"
 
-up:
+up: env
 	$(COMPOSE) up --build
+
+env:
+	@test -f .env || (cp .env.example .env && echo "Creado .env desde .env.example — edítalo con tus credenciales")
 
 django-shell:
 	$(COMPOSE) run --rm --service-ports web bash
@@ -90,6 +94,9 @@ collectstatic:
 
 seed:
 	$(COMPOSE) exec web python manage.py seed_products
+
+backup:
+	$(COMPOSE) exec web python manage.py backup_db
 
 excel-import:
 	$(COMPOSE) exec web python manage.py import_products_from_excel

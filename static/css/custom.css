@@ -1,0 +1,475 @@
+/* DepoAuto - Sistema de diseño */
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
+:root {
+  --depo-nav-height: 64px;
+  --depo-primary: #0f172a;
+  --depo-primary-light: #1e293b;
+  --depo-accent: #ea580c;
+  --depo-accent-hover: #c2410c;
+  --depo-accent-soft: rgba(234, 88, 12, 0.12);
+  --depo-surface: #ffffff;
+  --depo-bg: #f8fafc;
+  --depo-bg-warm: #fefce8;
+  --depo-text: #0f172a;
+  --depo-text-muted: #64748b;
+  --depo-border: #e2e8f0;
+  --depo-shadow: 0 4px 6px -1px rgba(15, 23, 42, 0.08), 0 2px 4px -2px rgba(15, 23, 42, 0.06);
+  --depo-shadow-lg: 0 20px 25px -5px rgba(15, 23, 42, 0.08), 0 8px 10px -6px rgba(15, 23, 42, 0.06);
+  --depo-radius: 12px;
+  --depo-radius-lg: 16px;
+  --depo-transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+* {
+  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+}
+
+body {
+  background: linear-gradient(180deg, var(--depo-bg) 0%, var(--depo-bg-warm) 100%);
+  color: var(--depo-text);
+  min-height: 100vh;
+  padding-top: var(--depo-nav-height);
+}
+
+/* Navbar - siempre visible (fixed) */
+.navbar-depo {
+  position: fixed !important;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1030;
+  background: rgba(255, 255, 255, 0.98) !important;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.08);
+  padding: 0.75rem 0;
+}
+
+.navbar-depo .navbar-brand {
+  font-weight: 800;
+  font-size: 1.35rem;
+  color: var(--depo-primary) !important;
+  letter-spacing: -0.02em;
+}
+
+.navbar-depo .nav-link {
+  font-weight: 500;
+  color: var(--depo-text-muted) !important;
+  padding: 0.5rem 1rem !important;
+  border-radius: 8px;
+  transition: var(--depo-transition);
+}
+
+.navbar-depo .nav-link:hover {
+  color: var(--depo-primary) !important;
+  background: var(--depo-accent-soft);
+}
+
+.navbar-depo .nav-link::after {
+  display: none;
+}
+
+/* Hero */
+.hero-depo {
+  border-radius: var(--depo-radius-lg);
+  overflow: hidden;
+  box-shadow: var(--depo-shadow-lg);
+  position: relative;
+}
+
+.hero-depo .carousel-item img {
+  height: 380px;
+  object-fit: cover;
+  object-position: center;
+}
+
+@media (min-width: 768px) {
+  .hero-depo .carousel-item img {
+    height: 480px;
+  }
+}
+
+@media (min-width: 992px) {
+  .hero-depo .carousel-item img {
+    height: 520px;
+  }
+}
+
+.hero-depo .carousel-caption {
+  background: linear-gradient(0deg, rgba(15, 23, 42, 0.85) 0%, transparent 100%);
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 3rem 2rem 2rem;
+  text-align: left;
+}
+
+.hero-depo .carousel-caption h2 {
+  font-weight: 800;
+  font-size: clamp(1.5rem, 4vw, 2.25rem);
+  letter-spacing: -0.02em;
+  text-shadow: 0 2px 20px rgba(0, 0, 0, 0.3);
+}
+
+.hero-depo .carousel-caption .lead {
+  font-size: 1.1rem;
+  opacity: 0.95;
+}
+
+.hero-depo .btn-hero {
+  background: var(--depo-accent);
+  border: none;
+  color: white;
+  font-weight: 600;
+  padding: 0.75rem 1.5rem;
+  border-radius: 10px;
+  transition: var(--depo-transition);
+  box-shadow: 0 4px 14px rgba(234, 88, 12, 0.4);
+}
+
+.hero-depo .btn-hero:hover {
+  background: var(--depo-accent-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(234, 88, 12, 0.45);
+  color: white;
+}
+
+.hero-depo .carousel-control-prev,
+.hero-depo .carousel-control-next {
+  width: 48px;
+  height: 48px;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 50%;
+  top: 50%;
+  transform: translateY(-50%);
+  opacity: 1;
+  box-shadow: var(--depo-shadow);
+}
+
+.hero-depo .carousel-control-prev { left: 1rem; }
+.hero-depo .carousel-control-next { right: 1rem; }
+
+.hero-depo .carousel-control-prev-icon,
+.hero-depo .carousel-control-next-icon {
+  filter: invert(1);
+  opacity: 0.7;
+}
+
+/* Cards */
+.card-depo {
+  background: var(--depo-surface);
+  border: 1px solid var(--depo-border);
+  border-radius: var(--depo-radius);
+  overflow: hidden;
+  transition: var(--depo-transition);
+  box-shadow: var(--depo-shadow);
+}
+
+.card-depo:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--depo-shadow-lg);
+  border-color: transparent;
+}
+
+.card-depo .card-body {
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.card-depo .card-title {
+  font-weight: 600;
+  font-size: 1rem;
+  color: var(--depo-primary);
+  /* Máximo 2 líneas para que el botón quede alineado entre tarjetas */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  line-height: 1.4;
+  min-height: 2.8em;
+}
+
+.card-depo .card-body .btn {
+  margin-top: auto;
+}
+
+/* Category cards */
+.category-depo {
+  aspect-ratio: 1;
+  border-radius: var(--depo-radius);
+  overflow: hidden;
+  position: relative;
+  background-size: cover;
+  background-position: center;
+  transition: var(--depo-transition);
+}
+
+.category-depo::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 40%, rgba(15, 23, 42, 0.85) 100%);
+  transition: var(--depo-transition);
+}
+
+.category-depo:hover {
+  transform: scale(1.03);
+  box-shadow: var(--depo-shadow-lg);
+}
+
+.category-depo:hover::before {
+  background: linear-gradient(180deg, transparent 20%, rgba(15, 23, 42, 0.9) 100%);
+}
+
+.category-depo span {
+  position: absolute;
+  bottom: 1rem;
+  left: 1rem;
+  right: 1rem;
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: white;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+  z-index: 1;
+}
+
+/* KPI badges */
+.kpi-depo {
+  background: var(--depo-surface);
+  border: 1px solid var(--depo-border);
+  border-radius: var(--depo-radius);
+  padding: 1rem 1.25rem;
+  transition: var(--depo-transition);
+}
+
+.kpi-depo:hover {
+  border-color: var(--depo-accent);
+  box-shadow: 0 0 0 3px var(--depo-accent-soft);
+}
+
+.kpi-depo .kpi-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: var(--depo-accent-soft);
+  color: var(--depo-accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+}
+
+.kpi-depo .kpi-title {
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: var(--depo-primary);
+}
+
+.kpi-depo .kpi-sub {
+  font-size: 0.8rem;
+  color: var(--depo-text-muted);
+}
+
+/* Buttons */
+.btn-depo-primary {
+  background: var(--depo-accent);
+  border: none;
+  color: white;
+  font-weight: 600;
+  padding: 0.5rem 1.25rem;
+  border-radius: 10px;
+  transition: var(--depo-transition);
+}
+
+.btn-depo-primary:hover {
+  background: var(--depo-accent-hover);
+  color: white;
+  transform: translateY(-1px);
+}
+
+.btn-depo-outline {
+  border: 2px solid var(--depo-accent);
+  color: var(--depo-accent);
+  font-weight: 600;
+  padding: 0.5rem 1.25rem;
+  border-radius: 10px;
+  transition: var(--depo-transition);
+}
+
+.btn-depo-outline:hover {
+  background: var(--depo-accent-soft);
+  color: var(--depo-accent-hover);
+  border-color: var(--depo-accent-hover);
+}
+
+/* Section headers */
+.section-header {
+  font-weight: 800;
+  font-size: 1.5rem;
+  letter-spacing: -0.02em;
+  color: var(--depo-primary);
+  margin-bottom: 1.5rem;
+}
+
+.section-header small {
+  font-weight: 500;
+  color: var(--depo-text-muted);
+  font-size: 0.9rem;
+}
+
+/* Product images - espacio reservado para evitar saltos al cargar */
+.product-img-depo {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
+  background: var(--depo-bg);
+  padding: 0.5rem;
+  display: block;
+}
+
+/* Contenedores: aspect-ratio reserva espacio, evita saltos al cargar */
+.ratio.img-reserve {
+  min-height: 0;
+  background: var(--depo-bg);
+}
+
+/* Sidebar filter */
+.sidebar-depo {
+  background: var(--depo-surface);
+  border: 1px solid var(--depo-border);
+  border-radius: var(--depo-radius);
+  overflow: hidden;
+  box-shadow: var(--depo-shadow);
+}
+
+.sidebar-depo .list-group-item {
+  border: none;
+  border-bottom: 1px solid var(--depo-border);
+  padding: 0.75rem 1rem;
+  font-weight: 500;
+  transition: var(--depo-transition);
+}
+
+.sidebar-depo .list-group-item:last-child {
+  border-bottom: none;
+}
+
+.sidebar-depo .list-group-item a {
+  color: var(--depo-text-muted);
+  text-decoration: none;
+  transition: var(--depo-transition);
+}
+
+.sidebar-depo .list-group-item:hover a,
+.sidebar-depo .list-group-item.active a {
+  color: var(--depo-accent);
+}
+
+.sidebar-depo .list-group-item.active {
+  background: var(--depo-accent-soft);
+}
+
+/* Search */
+.search-depo .form-control {
+  border-radius: 10px;
+  border: 1px solid var(--depo-border);
+  padding: 0.6rem 1rem;
+}
+
+.search-depo .form-control:focus {
+  border-color: var(--depo-accent);
+  box-shadow: 0 0 0 3px var(--depo-accent-soft);
+}
+
+/* Pagination */
+.pagination-depo .page-link {
+  border-radius: 8px !important;
+  margin: 0 2px;
+  font-weight: 500;
+  color: var(--depo-primary);
+}
+
+.pagination-depo .page-item.active .page-link {
+  background: var(--depo-accent);
+  border-color: var(--depo-accent);
+}
+
+/* Footer */
+.footer-depo {
+  background: var(--depo-primary);
+  color: rgba(255, 255, 255, 0.8);
+  padding: 2.5rem 0;
+  margin-top: 4rem;
+}
+
+.footer-depo a {
+  color: rgba(255, 255, 255, 0.8);
+  text-decoration: none;
+  transition: var(--depo-transition);
+}
+
+.footer-depo a:hover {
+  color: white;
+}
+
+/* Contact form */
+.contact-depo .form-control,
+.contact-depo .form-label {
+  border-radius: 10px;
+}
+
+.contact-depo .form-control:focus {
+  border-color: var(--depo-accent);
+  box-shadow: 0 0 0 3px var(--depo-accent-soft);
+}
+
+.contact-depo .card {
+  border-radius: var(--depo-radius-lg);
+  border: 1px solid var(--depo-border);
+  box-shadow: var(--depo-shadow);
+}
+
+/* Page headers */
+.page-header-depo {
+  font-weight: 800;
+  font-size: 2rem;
+  letter-spacing: -0.02em;
+  color: var(--depo-primary);
+  margin-bottom: 0.5rem;
+}
+
+.page-subtitle-depo {
+  color: var(--depo-text-muted);
+  font-size: 1.1rem;
+}
+
+/* WhatsApp float */
+.whatsapp-float {
+  position: fixed;
+  right: 1.5rem;
+  bottom: 1.5rem;
+  z-index: 1050;
+}
+
+.btn-whatsapp {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: #25D366;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 24px rgba(37, 211, 102, 0.4);
+  text-decoration: none;
+  transition: var(--depo-transition);
+}
+
+.btn-whatsapp:hover {
+  background: #1ebe5d;
+  color: #fff;
+  transform: scale(1.05);
+}

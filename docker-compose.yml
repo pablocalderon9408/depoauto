@@ -34,14 +34,27 @@ services:
       mc anonymous set download local/depoauto || true; \
       echo 'Buckets ready.'; exit 0"
 
+  mailpit:
+    image: axllent/mailpit:latest
+    restart: unless-stopped
+    ports:
+      - "1025:1025"   # SMTP (envío)
+      - "8025:8025"   # Web UI (ver correos en http://localhost:8025)
+
   web:
     build: .
     depends_on:
       - db
       - minio
+      - mailpit
+    env_file:
+      - .env
     environment:
       DATABASE_URL: postgres://depoauto:depoauto@db:5432/depoauto
       DEBUG: "1"
+      EMAIL_PROVIDER: mailpit
+      EMAIL_HOST: mailpit
+      EMAIL_PORT: "1025"
       RUN_MIGRATIONS_ON_START: "0"
       RUN_COLLECTSTATIC_ON_START: "0"
       USE_DEV_SERVER: "1"
@@ -66,5 +79,7 @@ services:
 volumes:
   db_data:
   minio_data:
+
+# Mailpit: correos locales en http://localhost:8025
 
 

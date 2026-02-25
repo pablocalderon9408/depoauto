@@ -69,11 +69,18 @@ def product_detail(request, slug):
     curated = Product.objects.filter(id__in=list(curated_ids), is_active=True)
     fallback = Product.objects.filter(is_active=True, category=product.category).exclude(id__in=[product.id, *curated_ids])[: max(0, 8 - curated.count())]
     related_products = list(curated) + list(fallback)
-    site_config = SiteConfig.get_solo()
+    try:
+        cfg = SiteConfig.get_solo()
+        whatsapp_phone = (cfg.contact_phone or '').strip() or '573192333702'
+        whatsapp_prefill = (cfg.whatsapp_prefill or '').strip() or 'Quiero una asesoría en sus productos'
+    except Exception:
+        whatsapp_phone = '573192333702'
+        whatsapp_prefill = 'Quiero una asesoría en sus productos'
     context = {
         'product': product,
         'related_products': related_products,
-        'site_config': site_config,
+        'whatsapp_phone': whatsapp_phone,
+        'whatsapp_prefill': whatsapp_prefill,
     }
     return render(request, 'products/product_detail.html', context)
 

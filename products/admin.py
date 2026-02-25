@@ -86,19 +86,16 @@ class SiteConfigAdmin(admin.ModelAdmin):
     form = SiteConfigForm
     inlines = []
     fieldsets = (
-        ("Carrusel - Slide 1", {"fields": ("hero_title_1", "hero_subtitle_1", "hero_image_1_url", "hero_image_1_file", "hero_cta_1_label", "hero_cta_1_url")}),
-        ("Carrusel - Slide 2", {"fields": ("hero_title_2", "hero_subtitle_2", "hero_image_2_url", "hero_image_2_file", "hero_cta_2_label", "hero_cta_2_url")}),
-        ("Carrusel - Slide 3", {"fields": ("hero_title_3", "hero_subtitle_3", "hero_image_3_url", "hero_image_3_file", "hero_cta_3_label", "hero_cta_3_url")}),
-        ("Sección: Categorías destacadas", {"fields": (
-            "show_top_categories", "home_top_categories_title", "home_top_categories_limit",
-            "home_top_categories_cta_label", "home_top_categories_cta_url",
-        )}),
+        ("Contacto / WhatsApp", {"fields": ("contact_phone", "whatsapp_prefill")}),
+        ("Email (formulario de contacto)", {"fields": ("contact_email", "email_smtp_user", "email_smtp_password")}),
         ("Sección: Novedades", {"fields": (
             "show_new_arrivals", "home_new_arrivals_title", "home_new_arrivals_limit",
             "home_new_arrivals_cta_label", "home_new_arrivals_cta_url",
         )}),
-        ("Contacto / WhatsApp", {"fields": ("contact_phone", "whatsapp_prefill")}),
-        ("Email (formulario de contacto)", {"fields": ("contact_email", "email_smtp_user", "email_smtp_password")}),
+        ("Sección: Categorías destacadas", {"fields": (
+            "show_top_categories", "home_top_categories_title", "home_top_categories_limit",
+            "home_top_categories_cta_label", "home_top_categories_cta_url",
+        )}),
     )
     def has_add_permission(self, request):
         return not SiteConfig.objects.exists()
@@ -110,13 +107,6 @@ class SiteConfigAdmin(admin.ModelAdmin):
         return redirect(url)
 
 
-class HeroSlideInline(admin.TabularInline):
-    model = HeroSlide
-    extra = 1
-    fields = ("title", "subtitle", "image_url", "image_file", "cta_label", "cta_url", "is_active", "sort_order")
-
-
-SiteConfigAdmin.inlines = [HeroSlideInline]
 
 
 @admin.register(HeroSlide)

@@ -94,6 +94,18 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
         crossorigin="anonymous"></script>
+    <script>
+      (function() {
+        function initImgLoad() {
+          document.querySelectorAll('.img-reserve img, .product-img-depo').forEach(function(img) {
+            if (img.complete && img.naturalWidth > 0) img.classList.add('loaded');
+            else img.addEventListener('load', function() { img.classList.add('loaded'); });
+          });
+        }
+        if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initImgLoad);
+        else initImgLoad();
+      })();
+    </script>
     {% block extra_scripts %}{% endblock %}
 </body>
 

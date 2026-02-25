@@ -319,21 +319,29 @@ body {
   font-size: 0.9rem;
 }
 
-/* Product images - espacio reservado para evitar saltos al cargar */
-.product-img-depo {
+/* Product images - carga suave sin parpadeo */
+.product-img-depo,
+.img-reserve .img-contain {
   width: 100%;
   height: 100%;
   object-fit: contain;
   object-position: center;
-  background: var(--depo-bg);
+  background: #e2e8f0;
   padding: 0.5rem;
   display: block;
+  opacity: 0;
+  transition: opacity 0.25s ease-out;
 }
 
-/* Contenedores: aspect-ratio reserva espacio, evita saltos al cargar */
+.product-img-depo.loaded,
+.img-reserve .img-contain.loaded {
+  opacity: 1;
+}
+
+/* Skeleton visible mientras carga */
 .ratio.img-reserve {
   min-height: 0;
-  background: var(--depo-bg);
+  background: linear-gradient(135deg, #e2e8f0 0%, #f1f5f9 100%);
 }
 
 /* Sidebar filter */

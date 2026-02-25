@@ -139,8 +139,7 @@
     <div class="col">
         <div class="card card-depo h-100">
             <div class="ratio ratio-4x3 overflow-hidden bg-light img-reserve">
-                <img class="product-img-depo" src="{{ p.image_url_display }}" alt="{{ p.name }}" loading="eager"
-                    width="400" height="300">
+                <img class="product-img-depo" src="{{ p.image_url_display }}" alt="{{ p.name }}" loading="eager" {% if forloop.counter <= 4 %}fetchpriority="high"{% endif %} width="400" height="300">
             </div>
             <div class="card-body d-flex flex-column">
                 <h5 class="card-title">{{ p.name }}</h5>

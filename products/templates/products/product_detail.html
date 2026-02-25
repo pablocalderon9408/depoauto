@@ -71,13 +71,10 @@
         <div class="product-description text-muted mb-4">
             {{ product.description|linebreaksbr }}
         </div>
-        {% with phone=site_config.contact_phone|default:"573192333702"
-        prefill=site_config.whatsapp_prefill|default:"Quiero una asesoría en sus productos" %}
-        <a href="https://wa.me/{{ phone }}?text={{ prefill|urlencode }}%20-%20{{ product.name|urlencode }}%20(SKU:%20{{ product.sku }})"
+        <a href="https://wa.me/{{ whatsapp_phone }}?text={{ whatsapp_prefill|urlencode }}%20-%20{{ product.name|urlencode }}%20(SKU:%20{{ product.sku }})"
             target="_blank" rel="noopener" class="btn btn-depo-primary btn-lg">
             Consultar por WhatsApp
         </a>
-        {% endwith %}
     </div>
 </div>
 

@@ -22,6 +22,8 @@ def index(request):
     context = {
         'show_top_categories': show_top_categories,
         'show_new_arrivals': show_new_arrivals,
+        'home_new_arrivals_title': site_config.home_new_arrivals_title if site_config else 'Novedades',
+        'home_top_categories_title': site_config.home_top_categories_title if site_config else 'Categorías destacadas',
         'top_categories': top_categories,
         'featured_products': featured_products,
         'site_config': site_config,
@@ -93,12 +95,14 @@ def contact(request):
     if request.method == 'POST':
         name = request.POST.get('name', '').strip()
         email = request.POST.get('email', '').strip()
+        phone = request.POST.get('phone', '').strip()
         message = request.POST.get('message', '').strip()
         if not name or not email or not message:
             messages.error(request, 'Please fill in all fields.')
             return redirect('contact')
         subject = f"Contact form - {name}"
-        body = f"From: {name} <{email}>\n\n{message}"
+        phone_line = f"Celular: {phone}\n" if phone else ""
+        body = f"From: {name} <{email}>\n{phone_line}\n{message}"
 
         cfg = SiteConfig.get_solo()
         recipient = (cfg.contact_email or '').strip() or settings.CONTACT_EMAIL

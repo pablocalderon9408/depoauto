@@ -28,7 +28,9 @@
             <div class="carousel-caption d-none d-md-block">
                 {% if s.title %}<h2>{{ s.title }}</h2>{% endif %}
                 {% if s.subtitle %}<p class="lead mb-3">{{ s.subtitle }}</p>{% endif %}
+                {% if s.cta_label %}
                 <a href="{{ s.cta_url }}" class="btn btn-hero">{{ s.cta_label|default:'Ver productos' }}</a>
+                {% endif %}
             </div>
         </div>
         {% endfor %}
@@ -78,8 +80,8 @@
         <div class="kpi-depo d-flex align-items-center gap-3">
             <span class="kpi-icon">🛡️</span>
             <div>
-                <div class="kpi-title">Pagos seguros</div>
-                <div class="kpi-sub">Pasarelas confiables</div>
+                <div class="kpi-title">Disponibilidad</div>
+                <div class="kpi-sub">Inventario constante de productos</div>
             </div>
         </div>
     </div>
@@ -87,8 +89,8 @@
         <div class="kpi-depo d-flex align-items-center gap-3">
             <span class="kpi-icon">⭐</span>
             <div>
-                <div class="kpi-title">Muy valorados</div>
-                <div class="kpi-sub">Por nuestros clientes</div>
+                <div class="kpi-title">Calidad</div>
+                <div class="kpi-sub">Altos estándares de calidad</div>
             </div>
         </div>
     </div>
@@ -96,8 +98,8 @@
         <div class="kpi-depo d-flex align-items-center gap-3">
             <span class="kpi-icon">📦</span>
             <div>
-                <div class="kpi-title">Repuestos de calidad</div>
-                <div class="kpi-sub">Selección cuidadosa</div>
+                <div class="kpi-title">Productos</div>
+                <div class="kpi-sub">Soplado e inyección de plásticos</div>
             </div>
         </div>
     </div>
@@ -106,7 +108,7 @@
 <!-- Categorías -->
 {% if show_top_categories %}
 <div class="d-flex align-items-center justify-content-between mb-3">
-    <h2 class="section-header mb-0">Categorías destacadas</h2>
+    <h2 class="section-header mb-0">{{home_new_arrivals_title}}</h2>
     <a class="btn btn-depo-outline btn-sm" href="{% url 'product_list' %}">Ver todo</a>
 </div>
 <div class="row row-cols-2 row-cols-md-3 g-3 mb-5">
@@ -131,7 +133,7 @@
 <!-- Novedades -->
 {% if show_new_arrivals %}
 <div class="d-flex align-items-center justify-content-between mb-3">
-    <h2 class="section-header mb-0">Novedades</h2>
+    <h2 class="section-header mb-0">{{home_top_categories_title}}</h2>
     <a class="btn btn-depo-outline btn-sm" href="{% url 'product_list' %}">Ver todos</a>
 </div>
 <div class="row row-cols-2 row-cols-md-4 g-3">
@@ -139,11 +141,16 @@
     <div class="col">
         <div class="card card-depo h-100">
             <div class="ratio ratio-4x3 overflow-hidden bg-light img-reserve">
-                <img class="product-img-depo" src="{{ p.image_url_display }}" alt="{{ p.name }}" loading="eager" {% if forloop.counter <= 4 %}fetchpriority="high"{% endif %} width="400" height="300">
+                {% if forloop.counter <= 4 %} <img class="product-img-depo" src="{{ p.image_url_display }}"
+                    alt="{{ p.name }}" loading="eager" fetchpriority="high" width="400" height="300">
+                    {% else %}
+                    <img class="product-img-depo" src="{{ p.image_url_display }}" alt="{{ p.name }}" loading="lazy"
+                        width="400" height="300">
+                    {% endif %}
             </div>
             <div class="card-body d-flex flex-column">
                 <h5 class="card-title">{{ p.name }}</h5>
-                <p class="card-text text-muted small mb-2">SKU: {{ p.sku }}</p>
+                <p class="card-text text-muted small mb-2">REF: {{ p.sku }}</p>
                 <a href="{% url 'product_detail' p.slug %}" class="btn btn-depo-primary btn-sm w-100 mt-auto">Ver
                     producto</a>
             </div>

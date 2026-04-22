@@ -66,12 +66,12 @@
     </div>
 
     <div class="col-12 col-lg-6">
-        <p class="text-muted small mb-1">SKU: {{ product.sku }}</p>
+        <p class="text-muted small mb-1">REF: {{ product.sku }}</p>
         <h1 class="page-header-depo mb-3">{{ product.name }}</h1>
         <div class="product-description text-muted mb-4">
             {{ product.description|linebreaksbr }}
         </div>
-        <a href="https://wa.me/{{ whatsapp_phone }}?text={{ whatsapp_prefill|urlencode }}%20-%20{{ product.name|urlencode }}%20(SKU:%20{{ product.sku }})"
+        <a href="https://wa.me/{{ whatsapp_phone }}?text={{ whatsapp_prefill|urlencode }}%20-%20{{ product.name|urlencode }}%20(REF:%20{{ product.sku }})"
             target="_blank" rel="noopener" class="btn btn-depo-primary btn-lg">
             Consultar por WhatsApp
         </a>

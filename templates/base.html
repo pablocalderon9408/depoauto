@@ -70,19 +70,88 @@
 
     <footer class="footer-depo mt-auto">
         <div class="container">
-            <div class="row align-items-center">
-                <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
-                    <span class="fw-bold">depoauto</span> — Repuestos y accesorios de calidad
+            <div class="row g-4">
+                <div class="col-12 col-md-4">
+                    <span class="footer-brand">depoauto</span>
+                    <p class="footer-tagline mb-0">
+                        Repuestos y accesorios de calidad. Más de 30 años fabricando
+                        piezas plásticas para vehículos.
+                    </p>
                 </div>
-                <div class="col-md-6 text-center text-md-end">
-                    <small>&copy; {% now "Y" %} depoauto. Todos los derechos reservados.</small>
+
+                <div class="col-12 col-md-4">
+                    <h6 class="footer-heading">Contacto</h6>
+                    <ul class="footer-list">
+                        <li>
+                            <span class="footer-icon" aria-hidden="true">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                                    <path d="M8 0a5 5 0 0 0-5 5c0 4.5 5 11 5 11s5-6.5 5-11a5 5 0 0 0-5-5zm0 7.5A2.5 2.5 0 1 1 8 2.5a2.5 2.5 0 0 1 0 5z"/>
+                                </svg>
+                            </span>
+                            <span>
+                                <strong>Dirección</strong>
+                                Calle 25 #59-44<br>Medellín, Colombia
+                            </span>
+                        </li>
+                        <li>
+                            <span class="footer-icon" aria-hidden="true">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                                    <path d="M13.601 2.326A7.912 7.912 0 008.01 0c-4.403 0-7.99 3.584-7.99 7.99 0 1.41.37 2.787 1.07 4.002L0 16l4.129-1.082a7.96 7.96 0 003.88 1.01h.004c4.403 0 7.99-3.584 7.99-7.99a7.93 7.93 0 00-2.402-5.612zM8.01 14.5h-.003a6.48 6.48 0 01-3.3-.9l-.236-.14-2.453.644.656-2.39-.154-.245a6.49 6.49 0 01-.996-3.365c0-3.588 2.922-6.51 6.51-6.51a6.47 6.47 0 014.618 1.914 6.47 6.47 0 011.906 4.61c0 3.588-2.922 6.51-6.51 6.51z"/>
+                                </svg>
+                            </span>
+                            <span>
+                                <strong>WhatsApp</strong>
+                                <a href="https://wa.me/573197198527" target="_blank" rel="noopener noreferrer">+57 319 719 8527</a>
+                            </span>
+                        </li>
+                        <li>
+                            <span class="footer-icon" aria-hidden="true">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                                    <path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4zm2-1a1 1 0 0 0-1 1v.217l7 4.2 7-4.2V4a1 1 0 0 0-1-1H2zm13 2.383-4.708 2.825L15 11.105V5.383zm-.034 6.876-5.64-3.471L8 9.583l-1.326-.795-5.64 3.47A1 1 0 0 0 2 13h12a1 1 0 0 0 .966-.741zM1 11.105l4.708-2.897L1 5.383v5.722z"/>
+                                </svg>
+                            </span>
+                            <span>
+                                <strong>Correo</strong>
+                                <a href="mailto:depoauto96@hotmail.com">depoauto96@hotmail.com</a>
+                            </span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="col-12 col-md-4">
+                    <h6 class="footer-heading">Horario</h6>
+                    <ul class="footer-list">
+                        <li>
+                            <span class="footer-icon" aria-hidden="true">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                                    <path d="M8 3.5a.5.5 0 0 0-1 0V9a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-.868L8 8.71V3.5z"/>
+                                    <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm7-8A7 7 0 1 1 1 8a7 7 0 0 1 14 0z"/>
+                                </svg>
+                            </span>
+                            <span>
+                                <strong>Atención</strong>
+                                Lunes a Viernes<br>7:00 a.m. – 3:30 p.m.
+                            </span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer-divider"></div>
+
+            <div class="row align-items-center">
+                <div class="col-md-6 text-center text-md-start footer-bottom mb-2 mb-md-0">
+                    &copy; {% now "Y" %} depoauto. Todos los derechos reservados.
+                </div>
+                <div class="col-md-6 text-center text-md-end footer-bottom">
+                    Repuestos y accesorios de calidad.
                 </div>
             </div>
         </div>
     </footer>
 
     <a class="whatsapp-float btn-whatsapp"
-        href="https://wa.me/{{ site_config.contact_phone|default:'573192333702' }}?text={{ site_config.whatsapp_prefill|default:'Quiero una asesoría en sus productos'|urlencode }}"
+        href="https://wa.me/{{ site_config.contact_phone|default:'573197198527' }}?text={{ site_config.whatsapp_prefill|default:'Quiero una asesoría en sus productos'|urlencode }}"
         target="_blank" rel="noopener noreferrer" aria-label="Chat por WhatsApp">
         <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor" viewBox="0 0 16 16"
             aria-hidden="true">

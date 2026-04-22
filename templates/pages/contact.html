@@ -32,6 +32,16 @@
                                 placeholder="tucorreo@ejemplo.com" required />
                         </div>
                         <div class="col-12">
+                            <label class="form-label fw-semibold">
+                                Celular
+                                <span class="text-muted fw-normal small">(opcional)</span>
+                            </label>
+                            <input type="tel" class="form-control form-control-lg" name="phone"
+                                placeholder="Ej: +57 319 719 8527"
+                                pattern="[\d\s()+\-]{7,20}"
+                                inputmode="tel" />
+                        </div>
+                        <div class="col-12">
                             <label class="form-label fw-semibold">Mensaje</label>
                             <textarea class="form-control" rows="4" name="message" placeholder="¿Cómo podemos ayudarte?"
                                 required></textarea>

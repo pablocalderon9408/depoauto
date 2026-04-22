@@ -1,29 +1,174 @@
 {% extends 'base.html' %}
+{% load static %}
 {% block title %}Nuestra historia — depoauto{% endblock %}
 
 {% block content %}
-<div class="row justify-content-center">
-    <div class="col-12 col-lg-8">
-        <h1 class="page-header-depo">Nuestra historia</h1>
-        <p class="page-subtitle-depo mb-4">Más de 30 años de experiencia en repuestos y accesorios</p>
+<section class="about-wrapper">
+    <!-- Hero -->
+    <div class="about-hero">
+        <span class="about-eyebrow">Sobre nosotros</span>
+        <h1 class="about-title">Más de <span class="about-title-accent">30 años</span> fabricando<br
+                class="d-none d-md-block">
+            repuestos plásticos de confianza</h1>
+        <p class="about-lead">
+            Somos una empresa colombiana especializada en la fabricación y comercialización de
+            repuestos plásticos para vehículos, con presencia nacional e internacional.
+        </p>
+    </div>
 
-        <div class="card card-depo">
-            <div class="card-body p-4 p-md-5">
-                <p class="text-muted mb-0" style="font-size: 1.1rem; line-height: 1.8;">
-                    Somos una empresa con más de 30 años de experiencia en la fabricación y comercialización de
-                    repuestos
-                    plásticos para vehículos. Nos especializamos en tanques auxiliares del radiador, tanques lavavidrios
-                    y
-                    mionas del lavavidrios, compatibles con vehículos de marcas como Toyota, Isuzu, Mitsubishi, Nissan,
-                    Mazda,
-                    Suzuki, Renault, Chevrolet, Ford, Hyundai y Kia.
-                </p>
-                <p class="text-muted mb-0 mt-4" style="font-size: 1.1rem; line-height: 1.8;">
-                    Nuestra reputación se basa en altos estándares de calidad,
-                    lo que nos ha permitido consolidarnos en el mercado nacional y expandirnos a nivel internacional.
-                </p>
+    <!-- Stats -->
+    <div class="row g-3 about-stats">
+        <div class="col-6 col-md-3">
+            <div class="about-stat">
+                <div class="about-stat-num">+30</div>
+                <div class="about-stat-label">Años de experiencia</div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="about-stat">
+                <div class="about-stat-num">5+</div>
+                <div class="about-stat-label">Líneas de producto</div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="about-stat">
+                <div class="about-stat-num">11</div>
+                <div class="about-stat-label">Marcas compatibles</div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="about-stat">
+                <div class="about-stat-num">🌎</div>
+                <div class="about-stat-label">Presencia internacional</div>
             </div>
         </div>
     </div>
-</div>
+
+    <!-- Main content -->
+    <div class="row g-4 align-items-stretch about-main">
+        <div class="col-12 col-lg-7">
+            <div class="card card-depo about-text-card h-100">
+                <div class="card-body p-4 p-md-5">
+                    <h2 class="about-section-title">Quiénes somos</h2>
+                    <p class="about-text">
+                        Somos una empresa con más de <strong>30 años de experiencia</strong> en la fabricación y
+                        comercialización de repuestos plásticos para vehículos. Nos especializamos en piezas clave
+                        del sistema de refrigeración y del lavaparabrisas, compatibles con las principales marcas
+                        del mercado.
+                    </p>
+                    <p class="about-text mb-0">
+                        Nuestra reputación se basa en <strong>altos estándares de calidad</strong>, lo que nos ha
+                        permitido consolidarnos en el mercado nacional y expandirnos a nivel internacional.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-lg-5">
+            <div class="card card-depo about-products-card h-100">
+                <div class="card-body p-4 p-md-5">
+                    <h2 class="about-section-title">Nuestras especialidades</h2>
+                    <ul class="about-products">
+                        <li>
+                            <span class="about-product-icon" aria-hidden="true">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor"
+                                    viewBox="0 0 16 16">
+                                    <path
+                                        d="M8 1.5a.5.5 0 0 1 .5.5v.538A5.002 5.002 0 0 1 13 7v3.5A1.5 1.5 0 0 1 11.5 12h-7A1.5 1.5 0 0 1 3 10.5V7a5.002 5.002 0 0 1 4.5-4.962V2a.5.5 0 0 1 .5-.5M4 7v3.5a.5.5 0 0 0 .5.5h7a.5.5 0 0 0 .5-.5V7a4 4 0 0 0-8 0" />
+                                    <path d="M5 13h6v1H5z" />
+                                </svg>
+                            </span>
+                            Tanques auxiliares del radiador
+                        </li>
+                        <li>
+                            <span class="about-product-icon" aria-hidden="true">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor"
+                                    viewBox="0 0 16 16">
+                                    <path
+                                        d="M7.468 1.407a.5.5 0 0 1 1.064 0l.89 3.558 3.556.89a.5.5 0 0 1 0 .963l-3.556.89-.89 3.556a.5.5 0 0 1-.964 0l-.89-3.556-3.556-.89a.5.5 0 0 1 0-.963l3.556-.89z" />
+                                </svg>
+                            </span>
+                            Tanques lavaparabrisas
+                        </li>
+                        <li>
+                            <span class="about-product-icon" aria-hidden="true">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor"
+                                    viewBox="0 0 16 16">
+                                    <path
+                                        d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0M6.5 4.5 11 8l-4.5 3.5z" />
+                                </svg>
+                            </span>
+                            Bombas del tanque lavaparabrisas
+                        </li>
+                        <li>
+                            <span class="about-product-icon" aria-hidden="true">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor"
+                                    viewBox="0 0 16 16">
+                                    <path
+                                        d="M4 2a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2zm3 3h2v6H7z" />
+                                </svg>
+                            </span>
+                            Mionas del lavaparabrisas
+                        </li>
+                        <li>
+                            <span class="about-product-icon" aria-hidden="true">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor"
+                                    viewBox="0 0 16 16">
+                                    <path
+                                        d="M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14m0 1A8 8 0 1 1 8 0a8 8 0 0 1 0 16" />
+                                    <path d="M4 8a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7A.5.5 0 0 1 4 8" />
+                                </svg>
+                            </span>
+                            Tapas de tanques auxiliares y lavaparabrisas
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Brands -->
+    <div class="about-brands-section">
+        <h2 class="about-section-title text-center mb-4">Compatible con las principales marcas</h2>
+        <ul class="about-brands">
+            <li>Toyota</li>
+            <li>Isuzu</li>
+            <li>Mitsubishi</li>
+            <li>Nissan</li>
+            <li>Mazda</li>
+            <li>Suzuki</li>
+            <li>Renault</li>
+            <li>Chevrolet</li>
+            <li>Ford</li>
+            <li>Hyundai</li>
+            <li>Kia</li>
+        </ul>
+    </div>
+
+    <!-- Timeline image -->
+    <div class="about-timeline">
+        <div class="about-timeline-header">
+            <span class="about-eyebrow">Nuestra trayectoria</span>
+            <h2 class="about-section-title mb-0">Un recorrido de tres décadas</h2>
+        </div>
+        <div class="card card-depo about-image-card">
+            <img src="{% static 'img/nuestra-historia.png' %}"
+                alt="Línea de tiempo de depoauto: fundación en 1996, producción tercerizada, inicio de importaciones en 1998, adquisición de maquinaria propia en 2000, primera exportación en 2015 y liderazgo actual en el mercado"
+                class="about-image"
+                loading="lazy" />
+        </div>
+    </div>
+
+    <!-- CTA -->
+    <div class="about-cta">
+        <div class="about-cta-inner">
+            <h3 class="mb-2">¿Necesitas un repuesto plástico para tu vehículo?</h3>
+            <p class="mb-3">Contáctanos y te ayudamos a encontrar la pieza ideal.</p>
+            <div class="d-flex flex-wrap gap-2 justify-content-center">
+                <a href="{% url 'product_list' %}" class="btn btn-depo-primary btn-lg px-4">Ver productos</a>
+                <a href="{% url 'contact' %}" class="btn btn-depo-outline btn-lg px-4">Contactar</a>
+            </div>
+        </div>
+    </div>
+</section>
 {% endblock %}

@@ -15,13 +15,8 @@
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     }
 
-    #productGallery .carousel-control-prev {
-        left: 0.75rem;
-    }
-
-    #productGallery .carousel-control-next {
-        right: 0.75rem;
-    }
+    #productGallery .carousel-control-prev { left: 0.75rem; }
+    #productGallery .carousel-control-next { right: 0.75rem; }
 
     #productGallery .carousel-control-prev-icon,
     #productGallery .carousel-control-next-icon {
@@ -32,73 +27,163 @@
 {% endblock %}
 
 {% block content %}
-<div class="row g-4 mb-5">
-    <div class="col-12 col-lg-6">
-        <div id="productGallery" class="carousel slide rounded-3 overflow-hidden shadow" data-bs-ride="carousel">
-            <div class="carousel-inner bg-light">
-                {% if product.gallery_images %}
-                {% for img in product.gallery_images %}
-                <div class="carousel-item {% if forloop.first %}active{% endif %}">
-                    <div class="ratio ratio-4x3 img-reserve">
-                        <img class="img-contain" src="{{ img.image_url_display }}"
-                            alt="{{ img.alt_text|default:product.name }}" loading="eager" width="600" height="450">
+<section class="detail-wrapper">
+    <!-- Breadcrumbs -->
+    <nav class="breadcrumb-depo" aria-label="breadcrumb">
+        <a href="{% url 'index' %}">Inicio</a>
+        <span class="sep">›</span>
+        <a href="{% url 'product_list' %}">Productos</a>
+        {% if product.category %}
+        <span class="sep">›</span>
+        <a href="{% url 'product_list_by_category' product.category.slug %}">{{ product.category.name }}</a>
+        {% endif %}
+        <span class="sep">›</span>
+        <span class="current">{{ product.name }}</span>
+    </nav>
+
+    <div class="row g-4 mb-5">
+        <!-- Gallery -->
+        <div class="col-12 col-lg-6">
+            <div id="productGallery" class="carousel slide detail-gallery" data-bs-ride="carousel">
+                <div class="carousel-inner">
+                    {% if product.gallery_images %}
+                    {% for img in product.gallery_images %}
+                    <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                        <div class="ratio ratio-4x3 img-reserve">
+                            <img class="img-contain" src="{{ img.image_url_display }}"
+                                alt="{{ img.alt_text|default:product.name }}" loading="eager" width="600" height="450">
+                        </div>
                     </div>
-                </div>
-                {% endfor %}
-                {% else %}
-                <div class="carousel-item active">
-                    <div class="ratio ratio-4x3 img-reserve">
-                        <img class="img-contain" src="{{ product.image_url_display }}" alt="{{ product.name }}"
-                            loading="eager" width="600" height="450">
+                    {% endfor %}
+                    {% else %}
+                    <div class="carousel-item active">
+                        <div class="ratio ratio-4x3 img-reserve">
+                            <img class="img-contain" src="{{ product.image_url_display }}" alt="{{ product.name }}"
+                                loading="eager" width="600" height="450">
+                        </div>
                     </div>
+                    {% endif %}
                 </div>
+                {% if product.gallery_images and product.gallery_images|length > 1 %}
+                <button class="carousel-control-prev" type="button" data-bs-target="#productGallery"
+                    data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Anterior</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#productGallery"
+                    data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Siguiente</span>
+                </button>
                 {% endif %}
             </div>
-            <button class="carousel-control-prev" type="button" data-bs-target="#productGallery" data-bs-slide="prev">
-                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                <span class="visually-hidden">Anterior</span>
-            </button>
-            <button class="carousel-control-next" type="button" data-bs-target="#productGallery" data-bs-slide="next">
-                <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                <span class="visually-hidden">Siguiente</span>
-            </button>
-        </div>
-    </div>
 
-    <div class="col-12 col-lg-6">
-        <p class="text-muted small mb-1">REF: {{ product.sku }}</p>
-        <h1 class="page-header-depo mb-3">{{ product.name }}</h1>
-        <div class="product-description text-muted mb-4">
-            {{ product.description|linebreaksbr }}
-        </div>
-        <a href="https://wa.me/{{ whatsapp_phone }}?text={{ whatsapp_prefill|urlencode }}%20-%20{{ product.name|urlencode }}%20(REF:%20{{ product.sku }})"
-            target="_blank" rel="noopener" class="btn btn-depo-primary btn-lg">
-            Consultar por WhatsApp
-        </a>
-    </div>
-</div>
-
-<hr class="my-5" />
-
-<h2 class="section-header mb-4">Productos relacionados</h2>
-<div class="row row-cols-2 row-cols-md-4 g-3">
-    {% for rp in related_products %}
-    <div class="col">
-        <div class="card card-depo h-100">
-            <div class="ratio ratio-4x3 overflow-hidden bg-light img-reserve">
-                <img class="product-img-depo" src="{{ rp.image_url_display }}" alt="{{ rp.name }}" loading="eager"
-                    width="400" height="300">
+            {% if product.gallery_images and product.gallery_images|length > 1 %}
+            <div class="detail-thumbs mt-3">
+                {% for img in product.gallery_images %}
+                <button type="button" class="detail-thumb {% if forloop.first %}active{% endif %}"
+                    data-bs-target="#productGallery" data-bs-slide-to="{{ forloop.counter0 }}"
+                    aria-label="Imagen {{ forloop.counter }}">
+                    <img src="{{ img.image_url_display }}" alt="{{ img.alt_text|default:product.name }}"
+                        loading="lazy" />
+                </button>
+                {% endfor %}
             </div>
-            <div class="card-body d-flex flex-column">
-                <h6 class="card-title flex-grow-1">{{ rp.name }}</h6>
-                <a href="{% url 'product_detail' rp.slug %}" class="btn btn-depo-primary btn-sm w-100 mt-auto">Ver</a>
+            {% endif %}
+        </div>
+
+        <!-- Info -->
+        <div class="col-12 col-lg-6">
+            <div class="detail-info">
+                <div class="detail-meta">
+                    {% if product.category %}
+                    <span class="detail-category">{{ product.category.name }}</span>
+                    {% endif %}
+                    <span class="detail-sku">REF: {{ product.sku }}</span>
+                </div>
+                <h1 class="detail-title">{{ product.name }}</h1>
+
+                {% if product.description %}
+                <div class="detail-description">
+                    {{ product.description|linebreaksbr }}
+                </div>
+                {% endif %}
+
+                <div class="detail-features">
+                    <div class="detail-feature">
+                        <span class="detail-feature-icon" aria-hidden="true">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor"
+                                viewBox="0 0 16 16">
+                                <path
+                                    d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z" />
+                            </svg>
+                        </span>
+                        <span>Calidad garantizada</span>
+                    </div>
+                    <div class="detail-feature">
+                        <span class="detail-feature-icon" aria-hidden="true">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor"
+                                viewBox="0 0 16 16">
+                                <path
+                                    d="M0 3.5A1.5 1.5 0 0 1 1.5 2h9A1.5 1.5 0 0 1 12 3.5V5h1.02a1.5 1.5 0 0 1 1.17.563l1.481 1.85a1.5 1.5 0 0 1 .329.938V10.5a1.5 1.5 0 0 1-1.5 1.5H14a2 2 0 1 1-4 0H6a2 2 0 1 1-3.998-.085A1.5 1.5 0 0 1 .5 10.5zM12 10a2 2 0 0 1 1.732 1h.768a.5.5 0 0 0 .5-.5V8.35a.5.5 0 0 0-.11-.312l-1.48-1.85A.5.5 0 0 0 13.02 6H12z" />
+                            </svg>
+                        </span>
+                        <span>Envíos a todo el país</span>
+                    </div>
+                    <div class="detail-feature">
+                        <span class="detail-feature-icon" aria-hidden="true">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor"
+                                viewBox="0 0 16 16">
+                                <path
+                                    d="M11 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1zM5 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2zm3 13a1 1 0 1 1 0 2 1 1 0 0 1 0-2" />
+                            </svg>
+                        </span>
+                        <span>Asesoría personalizada</span>
+                    </div>
+                </div>
+
+                <a href="https://wa.me/{{ whatsapp_phone }}?text={{ whatsapp_prefill|urlencode }}%20-%20{{ product.name|urlencode }}%20(REF:%20{{ product.sku }})"
+                    target="_blank" rel="noopener" class="btn btn-whatsapp-cta btn-lg w-100 mt-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
+                        <path
+                            d="M13.601 2.326A7.912 7.912 0 008.01 0c-4.403 0-7.99 3.584-7.99 7.99 0 1.41.37 2.787 1.07 4.002L0 16l4.129-1.082a7.96 7.96 0 003.88 1.01h.004c4.403 0 7.99-3.584 7.99-7.99a7.93 7.93 0 00-2.402-5.612zM8.01 14.5h-.003a6.48 6.48 0 01-3.3-.9l-.236-.14-2.453.644.656-2.39-.154-.245a6.49 6.49 0 01-.996-3.365c0-3.588 2.922-6.51 6.51-6.51a6.47 6.47 0 014.618 1.914 6.47 6.47 0 011.906 4.61c0 3.588-2.922 6.51-6.51 6.51z" />
+                    </svg>
+                    Consultar por WhatsApp
+                </a>
+
+                <p class="detail-contact-hint">
+                    ¿Prefieres otro canal? Escríbenos a
+                    <a href="mailto:depoauto96@hotmail.com">depoauto96@hotmail.com</a>
+                </p>
             </div>
         </div>
     </div>
-    {% empty %}
-    <div class="col-12">
-        <p class="text-muted">No hay productos relacionados.</p>
+
+    <!-- Relacionados -->
+    {% if related_products %}
+    <div class="detail-related">
+        <div class="text-center mb-4">
+            <span class="eyebrow">También te puede interesar</span>
+            <h2 class="section-title-underlined text-center mt-2">Productos relacionados</h2>
+        </div>
+        <div class="row row-cols-2 row-cols-md-4 g-3">
+            {% for rp in related_products %}
+            <div class="col">
+                <div class="card card-depo h-100">
+                    <div class="ratio ratio-4x3 overflow-hidden bg-light img-reserve">
+                        <img class="product-img-depo" src="{{ rp.image_url_display }}" alt="{{ rp.name }}"
+                            loading="lazy" width="400" height="300">
+                    </div>
+                    <div class="card-body d-flex flex-column">
+                        <h6 class="card-title flex-grow-1">{{ rp.name }}</h6>
+                        <a href="{% url 'product_detail' rp.slug %}"
+                            class="btn btn-depo-primary btn-sm w-100 mt-auto">Ver</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
     </div>
-    {% endfor %}
-</div>
+    {% endif %}
+</section>
 {% endblock %}

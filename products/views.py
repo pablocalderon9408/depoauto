@@ -1,8 +1,14 @@
+import json
+
 from django.shortcuts import render, get_object_or_404, redirect
 from django.db.models import Q
+from django.db import transaction
 from django.core.paginator import Paginator
 from django.core.mail import send_mail, BadHeaderError
 from django.contrib import messages
+from django.contrib.auth.decorators import user_passes_test
+from django.http import JsonResponse, HttpResponseBadRequest
+from django.views.decorators.http import require_POST
 from django.conf import settings
 from .models import Category, Product, RelatedProduct, SiteConfig, HeroSlide
 
@@ -34,7 +40,9 @@ def index(request):
 
 def product_list(request, category_slug=None):
     categories = Category.objects.filter(is_active=True).order_by('name')
-    products = Product.objects.filter(is_active=True).order_by('name')
+    products = Product.objects.filter(is_active=True).select_related('category').order_by(
+        'category__name', 'sort_order', 'name'
+    )
 
     selected_category = None
     if category_slug:
@@ -50,7 +58,10 @@ def product_list(request, category_slug=None):
 
     # Precio no se usa en este proyecto; se remueven filtros de precio
 
-    products = products.order_by('name')
+    if selected_category:
+        products = products.order_by('sort_order', 'name')
+    else:
+        products = products.order_by('category__name', 'sort_order', 'name')
 
     paginator = Paginator(products, 12)
     page_number = request.GET.get('page')
@@ -69,7 +80,11 @@ def product_detail(request, slug):
     product = get_object_or_404(Product, slug=slug, is_active=True)
     curated_ids = RelatedProduct.objects.filter(from_product=product).order_by('sort_order').values_list('to_product_id', flat=True)
     curated = Product.objects.filter(id__in=list(curated_ids), is_active=True)
-    fallback = Product.objects.filter(is_active=True, category=product.category).exclude(id__in=[product.id, *curated_ids])[: max(0, 8 - curated.count())]
+    fallback = (
+        Product.objects.filter(is_active=True, category=product.category)
+        .exclude(id__in=[product.id, *curated_ids])
+        .order_by('sort_order', 'name')[: max(0, 8 - curated.count())]
+    )
     related_products = list(curated) + list(fallback)
     try:
         cfg = SiteConfig.get_solo()
@@ -127,4 +142,77 @@ def contact(request):
         return redirect('contact')
     return render(request, 'pages/contact.html')
 
-# Create your views here.
+def _is_superuser(user):
+    return user.is_active and user.is_superuser
+
+
+@user_passes_test(_is_superuser, login_url='admin:login')
+def product_reorder(request):
+    groups = []
+    total = 0
+    for cat in Category.objects.filter(is_active=True).order_by('name'):
+        prods = list(
+            Product.objects.filter(is_active=True, category=cat)
+            .select_related('category')
+            .order_by('sort_order', 'name')
+        )
+        if not prods:
+            continue
+        groups.append({'category': cat, 'products': prods})
+        total += len(prods)
+    context = {
+        'reorder_groups': groups,
+        'reorder_product_count': total,
+    }
+    return render(request, 'products/product_reorder.html', context)
+
+
+@user_passes_test(_is_superuser, login_url='admin:login')
+@require_POST
+def product_reorder_save(request):
+    try:
+        payload = json.loads(request.body or b'{}')
+    except ValueError:
+        return HttpResponseBadRequest('invalid json')
+
+    by_category = payload.get('by_category')
+    if not isinstance(by_category, dict):
+        return HttpResponseBadRequest('invalid by_category')
+
+    total = 0
+    with transaction.atomic():
+        for cat_key, ids in by_category.items():
+            try:
+                category_id = int(cat_key)
+            except (TypeError, ValueError):
+                return HttpResponseBadRequest('invalid category id')
+            if not isinstance(ids, list):
+                return HttpResponseBadRequest('invalid order list')
+
+            clean_ids = []
+            for pid in ids:
+                try:
+                    clean_ids.append(int(pid))
+                except (TypeError, ValueError):
+                    return HttpResponseBadRequest('invalid id')
+
+            if len(set(clean_ids)) != len(clean_ids):
+                return HttpResponseBadRequest('duplicate id')
+
+            if not clean_ids:
+                continue
+
+            found = Product.objects.filter(
+                pk__in=clean_ids, category_id=category_id, is_active=True
+            ).values_list('pk', flat=True)
+            if set(found) != set(clean_ids):
+                return HttpResponseBadRequest('ids mismatch category')
+
+            for position, pid in enumerate(clean_ids, start=1):
+                Product.objects.filter(pk=pid, category_id=category_id).update(
+                    sort_order=position * 10
+                )
+            total += len(clean_ids)
+
+    return JsonResponse({'ok': True, 'count': total})
+

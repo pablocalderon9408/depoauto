@@ -1,0 +1,280 @@
+{% extends 'base.html' %}
+{% block title %}Reordenar productos — DepoAuto{% endblock %}
+
+{% block extra_head %}
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js" crossorigin="anonymous"></script>
+<style>
+    .reorder-toolbar {
+        position: sticky;
+        top: 0;
+        z-index: 20;
+        background: #fff;
+        border-bottom: 1px solid #e5e7eb;
+        padding: 0.75rem 1rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        flex-wrap: wrap;
+        margin-bottom: 1.25rem;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+    }
+
+    .reorder-toolbar .toolbar-info {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        flex-wrap: wrap;
+    }
+
+    .reorder-status {
+        font-size: 0.875rem;
+        padding: 0.25rem 0.6rem;
+        border-radius: 999px;
+        background: #f3f4f6;
+        color: #4b5563;
+    }
+
+    .reorder-status.is-dirty {
+        background: #fef3c7;
+        color: #92400e;
+    }
+
+    .reorder-status.is-saved {
+        background: #d1fae5;
+        color: #065f46;
+    }
+
+    .reorder-status.is-error {
+        background: #fee2e2;
+        color: #991b1b;
+    }
+
+    .reorder-category-grid .col {
+        cursor: grab;
+        user-select: none;
+    }
+
+    .reorder-category-grid .col:active {
+        cursor: grabbing;
+    }
+
+    .reorder-category-grid .card-depo {
+        transition: box-shadow 0.15s ease, transform 0.15s ease;
+    }
+
+    .reorder-category-grid .col:hover .card-depo {
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+    }
+
+    .reorder-category-grid .drag-ghost {
+        opacity: 0.4;
+    }
+
+    .reorder-category-grid .drag-chosen .card-depo {
+        transform: scale(1.02);
+    }
+
+    .reorder-badge {
+        position: absolute;
+        top: 0.5rem;
+        left: 0.5rem;
+        z-index: 2;
+        background: rgba(17, 24, 39, 0.85);
+        color: #fff;
+        font-size: 0.75rem;
+        font-weight: 600;
+        padding: 0.15rem 0.45rem;
+        border-radius: 999px;
+    }
+
+    .reorder-card-wrapper {
+        position: relative;
+    }
+
+    .reorder-category-head {
+        border-bottom: 1px solid #e5e7eb;
+        padding-bottom: 0.5rem;
+        margin-bottom: 1rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="catalog-wrapper">
+    <nav class="breadcrumb-depo" aria-label="breadcrumb">
+        <a href="{% url 'index' %}">Inicio</a>
+        <span class="sep">›</span>
+        <a href="{% url 'product_list' %}">Productos</a>
+        <span class="sep">›</span>
+        <span class="current">Reordenar</span>
+    </nav>
+
+    <div class="catalog-header">
+        <div>
+            <span class="eyebrow">Administración</span>
+            <h1 class="page-hero-title mt-2 mb-1" style="font-size: clamp(1.5rem, 3.5vw, 2.25rem);">
+                Reordenar productos
+            </h1>
+            <p class="text-muted mb-0">
+                El catálogo público agrupa por <strong>categoría</strong> (alfabético) y, dentro de cada una, respeta el orden que definas aquí.
+                Arrastra solo dentro de la misma categoría y pulsa <strong>Guardar orden</strong>.
+            </p>
+        </div>
+    </div>
+
+    <div class="reorder-toolbar">
+        <div class="toolbar-info">
+            <span class="fw-semibold">{{ reorder_product_count }} producto{{ reorder_product_count|pluralize }}</span>
+            <span id="reorder-status" class="reorder-status" role="status" aria-live="polite">Sin cambios</span>
+        </div>
+        <div class="d-flex gap-2">
+            <a href="{% url 'product_list' %}" class="btn btn-depo-outline btn-sm">Ver página pública</a>
+            <button id="save-order" type="button" class="btn btn-depo-primary btn-sm" disabled>
+                Guardar orden
+            </button>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <section class="col-12">
+            {% for group in reorder_groups %}
+            <div class="reorder-category-block mb-5">
+                <div class="reorder-category-head">
+                    <h2 class="h5 mb-0">{{ group.category.name }}</h2>
+                </div>
+                <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-3 reorder-category-grid"
+                    data-category-id="{{ group.category.id }}">
+                    {% for p in group.products %}
+                    <div class="col" data-id="{{ p.id }}">
+                        <div class="reorder-card-wrapper h-100">
+                            <span class="reorder-badge" data-position>{{ forloop.counter }}</span>
+                            <div class="card card-depo h-100">
+                                <div class="ratio ratio-4x3 overflow-hidden bg-light img-reserve">
+                                    <img class="product-img-depo" src="{{ p.image_url_display }}" alt="{{ p.name }}"
+                                        loading="lazy" width="400" height="300" draggable="false">
+                                </div>
+                                <div class="card-body d-flex flex-column">
+                                    <h5 class="card-title">{{ p.name }}</h5>
+                                    <p class="card-text text-muted small mb-0">REF: {{ p.sku }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12">
+                <div class="card card-depo empty-state">
+                    <div class="card-body text-center py-5">
+                        <h5 class="mt-3 mb-1">No hay productos activos</h5>
+                        <p class="text-muted mb-0">Crea productos desde el panel de Django admin para poder reordenarlos.</p>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </section>
+    </div>
+</section>
+
+<script>
+    (function () {
+        const grids = Array.from(document.querySelectorAll('.reorder-category-grid'));
+        const saveBtn = document.getElementById('save-order');
+        const statusEl = document.getElementById('reorder-status');
+        if (!saveBtn || !statusEl) return;
+
+        const saveUrl = "{% url 'product_reorder_save' %}";
+        const csrfToken = "{{ csrf_token }}";
+
+        let dirty = false;
+
+        function setStatus(text, variant) {
+            statusEl.textContent = text;
+            statusEl.classList.remove('is-dirty', 'is-saved', 'is-error');
+            if (variant) statusEl.classList.add(variant);
+        }
+
+        function refreshBadges() {
+            grids.forEach(function (grid) {
+                grid.querySelectorAll('[data-position]').forEach(function (el, idx) {
+                    el.textContent = idx + 1;
+                });
+            });
+        }
+
+        function markDirty() {
+            dirty = true;
+            saveBtn.disabled = false;
+            setStatus('Cambios sin guardar', 'is-dirty');
+            refreshBadges();
+        }
+
+        function collectByCategory() {
+            const by_category = {};
+            grids.forEach(function (grid) {
+                const cid = grid.dataset.categoryId;
+                by_category[cid] = Array.from(grid.querySelectorAll('[data-id]')).map(function (el) {
+                    return Number(el.dataset.id);
+                });
+            });
+            return by_category;
+        }
+
+        grids.forEach(function (grid) {
+            Sortable.create(grid, {
+                animation: 150,
+                ghostClass: 'drag-ghost',
+                chosenClass: 'drag-chosen',
+                dragClass: 'drag-active',
+                filter: '.empty-state, a, button',
+                preventOnFilter: false,
+                onEnd: function (evt) {
+                    if (evt.oldIndex !== evt.newIndex) {
+                        markDirty();
+                    }
+                }
+            });
+        });
+
+        saveBtn.addEventListener('click', async function () {
+            if (!dirty) return;
+            saveBtn.disabled = true;
+            setStatus('Guardando…');
+            try {
+                const res = await fetch(saveUrl, {
+                    method: 'POST',
+                    credentials: 'same-origin',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': csrfToken,
+                        'X-Requested-With': 'XMLHttpRequest',
+                    },
+                    body: JSON.stringify({ by_category: collectByCategory() }),
+                });
+                if (!res.ok) {
+                    throw new Error('HTTP ' + res.status);
+                }
+                const data = await res.json();
+                if (!data.ok) {
+                    throw new Error('Respuesta inválida');
+                }
+                dirty = false;
+                setStatus('Guardado (' + data.count + ')', 'is-saved');
+            } catch (err) {
+                console.error('Error guardando orden:', err);
+                setStatus('Error al guardar', 'is-error');
+                saveBtn.disabled = false;
+            }
+        });
+
+        window.addEventListener('beforeunload', function (e) {
+            if (dirty) {
+                e.preventDefault();
+                e.returnValue = '';
+            }
+        });
+    })();
+</script>
+{% endblock %}

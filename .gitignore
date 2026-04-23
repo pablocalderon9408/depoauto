@@ -1,3 +1,14 @@
+# Entornos virtuales locales (el proyecto usa Docker)
 .venv/
+.venv_*/
+venv/
+env/
+ENV/
+
+# Bytecode Python (evita ruido si ejecutas manage.py en la máquina host)
+__pycache__/
+*.py[cod]
+*$py.class
+
 .env
 FOTOS/

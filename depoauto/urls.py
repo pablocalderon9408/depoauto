@@ -19,7 +19,13 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 
+from products import views as product_views
+
 urlpatterns = [
+    # Rutas admin custom deben ir ANTES de admin.site.urls para evitar
+    # que el catch_all_view de Django admin las intercepte.
+    path('admin/products/reorder/', product_views.product_reorder, name='product_reorder'),
+    path('admin/products/reorder/save/', product_views.product_reorder_save, name='product_reorder_save'),
     path('admin/', admin.site.urls),
     path('', include('products.urls')),
 ]

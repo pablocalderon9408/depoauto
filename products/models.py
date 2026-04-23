@@ -54,6 +54,11 @@ class Product(models.Model):
     price = models.DecimalField(max_digits=10, decimal_places=2)
     stock = models.PositiveIntegerField(default=0)
     is_active = models.BooleanField(default=True)
+    sort_order = models.PositiveIntegerField(
+        default=0,
+        db_index=True,
+        help_text='Orden dentro de la categoría (menor = primero).',
+    )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     related_products = models.ManyToManyField(
@@ -66,11 +71,12 @@ class Product(models.Model):
     )
 
     class Meta:
-        ordering = ["name"]
+        ordering = ["category__name", "sort_order", "name"]
         indexes = [
             models.Index(fields=["slug"]),
             models.Index(fields=["sku"]),
             models.Index(fields=["name"]),
+            models.Index(fields=["category", "sort_order"]),
         ]
 
     def __str__(self) -> str:

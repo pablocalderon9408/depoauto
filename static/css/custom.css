@@ -76,12 +76,33 @@ body {
   display: none;
 }
 
-/* Hero */
-.hero-depo {
+/* Hero: el borde redondeado y el overflow solo en el viewport de la imagen;
+   flechas e indicadores quedan fuera para evitar solapes y la “raya” de un solo indicador en móvil */
+.hero-depo.hero-carousel-root {
+  overflow: visible;
+  border-radius: 0;
+  box-shadow: none;
+  position: relative;
+}
+
+.hero-carousel-layout {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+@media (min-width: 768px) {
+  .hero-carousel-layout {
+    gap: 0.75rem;
+  }
+}
+
+.hero-depo-viewport {
+  flex: 1 1 auto;
+  min-width: 0;
   border-radius: var(--depo-radius-lg);
   overflow: hidden;
   box-shadow: var(--depo-shadow-lg);
-  position: relative;
 }
 
 .hero-depo .carousel-item {
@@ -91,7 +112,7 @@ body {
 .hero-depo .carousel-item img {
   width: 100%;
   height: auto;
-  max-height: 60vh;
+  max-height: 70vh;
   object-fit: contain;
   object-position: center;
   display: block;
@@ -151,25 +172,79 @@ body {
   color: white;
 }
 
-.hero-depo .carousel-control-prev,
-.hero-depo .carousel-control-next {
-  width: 48px;
-  height: 48px;
-  background: rgba(255, 255, 255, 0.9);
+.hero-depo .hero-depo-control-side.carousel-control-prev,
+.hero-depo .hero-depo-control-side.carousel-control-next {
+  position: static;
+  top: auto;
+  left: auto;
+  right: auto;
+  bottom: auto;
+  transform: none;
+  width: 44px;
+  height: 44px;
+  flex: 0 0 auto;
+  margin: 0;
+  background: rgba(255, 255, 255, 0.92);
   border-radius: 50%;
-  top: 50%;
-  transform: translateY(-50%);
   opacity: 1;
   box-shadow: var(--depo-shadow);
 }
 
-.hero-depo .carousel-control-prev { left: 1rem; }
-.hero-depo .carousel-control-next { right: 1rem; }
+@media (min-width: 768px) {
+  .hero-depo .hero-depo-control-side.carousel-control-prev,
+  .hero-depo .hero-depo-control-side.carousel-control-next {
+    width: 48px;
+    height: 48px;
+  }
+}
 
-.hero-depo .carousel-control-prev-icon,
-.hero-depo .carousel-control-next-icon {
+.hero-depo .hero-depo-control-side .carousel-control-prev-icon,
+.hero-depo .hero-depo-control-side .carousel-control-next-icon {
   filter: invert(1);
   opacity: 0.7;
+}
+
+.hero-depo .hero-depo-indicators.carousel-indicators {
+  position: static;
+  left: auto;
+  right: auto;
+  bottom: auto;
+  margin: 0.65rem 0 0;
+  padding: 0;
+  justify-content: center;
+  align-items: center;
+  gap: 0.45rem;
+  flex-wrap: wrap;
+}
+
+/* Puntos circulares tipo galería Instagram (no pastillas del carousel por defecto) */
+.hero-depo .hero-depo-indicators [data-bs-target] {
+  flex: 0 0 6px;
+  width: 6px;
+  height: 6px;
+  min-width: 0;
+  max-width: none;
+  margin: 0;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  box-sizing: border-box;
+  background-color: rgba(15, 23, 42, 0.2);
+  opacity: 1;
+  text-indent: -9999px;
+  overflow: hidden;
+  transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.hero-depo .hero-depo-indicators [data-bs-target].active {
+  background-color: var(--depo-primary);
+  transform: scale(1.4);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-depo .hero-depo-indicators [data-bs-target] {
+    transition: none;
+  }
 }
 
 /* Cards */

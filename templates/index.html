@@ -18,46 +18,60 @@
 
 {% block content %}
 <section class="home-wrapper">
-    <!-- Hero carousel -->
-    <div id="heroCarousel" class="carousel slide hero-depo" data-bs-ride="carousel">
-        <div class="carousel-inner">
-            {% if hero_slides %}
-            {% for s in hero_slides %}
-            <div class="carousel-item {% if forloop.first %}active{% endif %}">
-                <img class="w-100 d-block" src="{{ s.image_url_display }}" alt="{{ s.title|default:'Hero' }}"
-                    loading="eager" fetchpriority="high" width="1600" height="600">
-                <div class="carousel-caption d-none d-md-block">
-                    {% if s.title %}<h2>{{ s.title }}</h2>{% endif %}
-                    {% if s.subtitle %}<p class="lead mb-3">{{ s.subtitle }}</p>{% endif %}
-                    {% if s.cta_label %}
-                    <a href="{{ s.cta_url }}" class="btn btn-hero">{{ s.cta_label|default:'Ver productos' }}</a>
+    <!-- Hero carousel: flechas e indicadores fuera del viewport de la imagen; con un solo slide no se muestran -->
+    {% with slide_count=hero_slides|length %}
+    <div id="heroCarousel"
+        class="carousel slide hero-depo hero-carousel-root{% if slide_count <= 1 %} hero-carousel-single{% endif %}"
+        {% if slide_count > 1 %}data-bs-ride="carousel" data-bs-touch="true"{% endif %}>
+        <div class="hero-carousel-layout">
+            {% if slide_count > 1 %}
+            <button class="carousel-control-prev hero-depo-control-side d-none d-md-flex" type="button"
+                data-bs-target="#heroCarousel" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Anterior</span>
+            </button>
+            {% endif %}
+            <div class="hero-depo-viewport">
+                <div class="carousel-inner">
+                    {% if hero_slides %}
+                    {% for s in hero_slides %}
+                    <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                        <img class="w-100 d-block" src="{{ s.image_url_display }}"
+                            alt="{{ s.title|default:s.name|default:'Hero' }}" loading="eager" fetchpriority="high"
+                            width="1600" height="600">
+                        <div class="carousel-caption d-none d-md-block">
+                            {% if s.title %}<h2>{{ s.title }}</h2>{% endif %}
+                            {% if s.subtitle %}<p class="lead mb-3">{{ s.subtitle }}</p>{% endif %}
+                            {% if s.cta_label %}
+                            <a href="{{ s.cta_url }}" class="btn btn-hero">{{ s.cta_label|default:'Ver productos' }}</a>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                    {% else %}
+                    <div class="carousel-item active">
+                        <img class="w-100 d-block" src="https://picsum.photos/seed/hero-fallback/1600/600" alt="DepoAuto"
+                            loading="eager" fetchpriority="high" width="1600" height="600">
+                        <div class="carousel-caption d-none d-md-block">
+                            <span class="badge bg-warning text-dark mb-2 px-3 py-2">Bienvenido</span>
+                            <h2>Repuestos y accesorios</h2>
+                            <p class="lead mb-3">Calidad para tu vehículo. Más de 30 años de experiencia.</p>
+                            <a href="{% url 'product_list' %}" class="btn btn-hero">Ver productos</a>
+                        </div>
+                    </div>
                     {% endif %}
                 </div>
             </div>
-            {% endfor %}
-            {% else %}
-            <div class="carousel-item active">
-                <img class="w-100 d-block" src="https://picsum.photos/seed/hero-fallback/1600/600" alt="DepoAuto"
-                    loading="eager" fetchpriority="high" width="1600" height="600">
-                <div class="carousel-caption d-none d-md-block">
-                    <span class="badge bg-warning text-dark mb-2 px-3 py-2">Bienvenido</span>
-                    <h2>Repuestos y accesorios</h2>
-                    <p class="lead mb-3">Calidad para tu vehículo. Más de 30 años de experiencia.</p>
-                    <a href="{% url 'product_list' %}" class="btn btn-hero">Ver productos</a>
-                </div>
-            </div>
+            {% if slide_count > 1 %}
+            <button class="carousel-control-next hero-depo-control-side d-none d-md-flex" type="button"
+                data-bs-target="#heroCarousel" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Siguiente</span>
+            </button>
             {% endif %}
         </div>
-        <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
-            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Anterior</span>
-        </button>
-        <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
-            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Siguiente</span>
-        </button>
-        {% if hero_slides %}
-        <div class="carousel-indicators">
+        {% if slide_count > 1 %}
+        <div class="carousel-indicators hero-depo-indicators">
             {% for s in hero_slides %}
             <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="{{ forloop.counter0 }}"
                 class="{% if forloop.first %}active{% endif %}" aria-label="Slide {{ forloop.counter }}"></button>
@@ -65,6 +79,7 @@
         </div>
         {% endif %}
     </div>
+    {% endwith %}
 
     <!-- KPIs -->
     <div class="home-kpis">

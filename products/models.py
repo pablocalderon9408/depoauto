@@ -292,6 +292,12 @@ class HeroSlide(models.Model):
         null=True,
         blank=True,
     )
+    name = models.CharField(
+        max_length=120,
+        blank=True,
+        verbose_name="Nombre en admin",
+        help_text="Identificador corto solo para el listado del admin (ej. Promo verano, Banner principal).",
+    )
     title = models.CharField(max_length=160, blank=True)
     subtitle = models.CharField(max_length=240, blank=True)
     image_url = models.URLField(max_length=500, blank=True, null=True)
@@ -307,7 +313,11 @@ class HeroSlide(models.Model):
         ordering = ["sort_order", "id"]
 
     def __str__(self) -> str:
-        return self.title or f"Slide #{self.id}"
+        if self.name:
+            return self.name
+        if self.title:
+            return self.title
+        return f"Slide #{self.id}"
 
     @property
     def image_url_display(self) -> str | None:

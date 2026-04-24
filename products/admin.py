@@ -2,6 +2,7 @@ from django.contrib import admin
 from django.forms import ModelForm, PasswordInput
 from django.shortcuts import redirect
 from django.urls import reverse
+from django.utils.html import format_html
 from .models import Category, Product, ProductVariant, VariantImage, RelatedProduct, SiteConfig, HeroSlide
 
 
@@ -111,8 +112,28 @@ class SiteConfigAdmin(admin.ModelAdmin):
 
 @admin.register(HeroSlide)
 class HeroSlideAdmin(admin.ModelAdmin):
-    list_display = ("title", "is_active", "sort_order", "updated_at")
+    list_display = ("image_preview", "name", "title", "is_active", "sort_order", "updated_at")
     list_filter = ("is_active",)
-    search_fields = ("title", "subtitle")
+    search_fields = ("name", "title", "subtitle")
     ordering = ("sort_order", "id")
-    fields = ("title", "subtitle", "image_url", "image_file", "cta_label", "cta_url", "is_active", "sort_order")
+    fields = (
+        "name",
+        "title",
+        "subtitle",
+        "image_url",
+        "image_file",
+        "cta_label",
+        "cta_url",
+        "is_active",
+        "sort_order",
+    )
+
+    @admin.display(description="Imagen")
+    def image_preview(self, obj: HeroSlide):
+        url = obj.image_url_display
+        if not url:
+            return "—"
+        return format_html(
+            '<img src="{}" alt="" style="max-height:48px;max-width:160px;border-radius:6px;object-fit:cover;vertical-align:middle" loading="lazy" />',
+            url,
+        )

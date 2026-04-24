@@ -109,21 +109,26 @@ body {
   background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
 }
 
+/* Altura fija del área hero; contain = imagen completa sin recorte (bandas con el fondo del slide) */
 .hero-depo .carousel-item img {
   width: 100%;
-  height: auto;
-  max-height: 70vh;
+  height: 280px;
   object-fit: contain;
   object-position: center;
   display: block;
   margin: 0 auto;
 }
 
+@media (min-width: 576px) {
+  .hero-depo .carousel-item img {
+    height: 340px;
+  }
+}
+
 @media (min-width: 768px) {
   .hero-depo .carousel-item img {
     height: 480px;
     max-height: none;
-    object-fit: cover;
   }
 }
 

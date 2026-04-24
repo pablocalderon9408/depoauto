@@ -41,12 +41,24 @@ class CategoryAdmin(admin.ModelAdmin):
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ("name", "sku", "category", "price", "stock", "is_active")
+    list_display = ("name", "sku", "category", "sort_order", "price", "stock", "is_active")
     list_filter = ("category", "is_active")
     search_fields = ("name", "sku", "slug", "description")
     prepopulated_fields = {"slug": ("name",)}
-    ordering = ("name",)
-    fields = ("name", "slug", "sku", "category", "description", "image_url", "image_file", "price", "stock", "is_active")
+    ordering = ("category__name", "sort_order", "name")
+    fields = (
+        "name",
+        "slug",
+        "sku",
+        "category",
+        "sort_order",
+        "description",
+        "image_url",
+        "image_file",
+        "price",
+        "stock",
+        "is_active",
+    )
 
 
 class VariantImageInline(admin.TabularInline):

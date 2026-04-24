@@ -55,9 +55,10 @@ class Product(models.Model):
     stock = models.PositiveIntegerField(default=0)
     is_active = models.BooleanField(default=True)
     sort_order = models.PositiveIntegerField(
+        "Orden",
         default=0,
         db_index=True,
-        help_text='Orden dentro de la categoría (menor = primero).',
+        help_text="Dentro de la misma categoría: número más bajo = aparece primero en el catálogo. Conviene usar 10, 20, 30… para poder insertar productos entre otros sin reordenar todo.",
     )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

@@ -1,4 +1,6 @@
 import json
+import urllib.parse
+import urllib.request
 
 from django.shortcuts import render, get_object_or_404, redirect
 from django.db.models import Q
@@ -106,6 +108,21 @@ def about(request):
     return render(request, 'pages/about.html')
 
 
+def _verify_recaptcha(token: str, min_score: float = 0.5) -> bool:
+    secret = settings.RECAPTCHA_SECRET_KEY
+    if not secret:
+        return True  # skip verification when key is not configured (dev)
+    data = urllib.parse.urlencode({'secret': secret, 'response': token}).encode()
+    try:
+        with urllib.request.urlopen(
+            'https://www.google.com/recaptcha/api/siteverify', data=data, timeout=5
+        ) as resp:
+            result = json.loads(resp.read())
+        return result.get('success', False) and result.get('score', 0) >= min_score
+    except Exception:
+        return False
+
+
 def contact(request):
     if request.method == 'POST':
         name = request.POST.get('name', '').strip()
@@ -113,7 +130,12 @@ def contact(request):
         phone = request.POST.get('phone', '').strip()
         message = request.POST.get('message', '').strip()
         if not name or not email or not message:
-            messages.error(request, 'Please fill in all fields.')
+            messages.error(request, 'Por favor completa todos los campos.')
+            return redirect('contact')
+
+        recaptcha_token = request.POST.get('g-recaptcha-response', '')
+        if not _verify_recaptcha(recaptcha_token):
+            messages.error(request, 'La verificación reCAPTCHA falló. Por favor inténtalo de nuevo.')
             return redirect('contact')
         subject = f"Contact form - {name}"
         phone_line = f"Celular: {phone}\n" if phone else ""
@@ -140,7 +162,9 @@ def contact(request):
         except Exception:
             messages.error(request, 'There was an error sending your message. Please try again later.')
         return redirect('contact')
-    return render(request, 'pages/contact.html')
+    return render(request, 'pages/contact.html', {
+        'recaptcha_site_key': settings.RECAPTCHA_SITE_KEY,
+    })
 
 def _is_superuser(user):
     return user.is_active and user.is_superuser

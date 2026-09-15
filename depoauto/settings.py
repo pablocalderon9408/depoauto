@@ -180,6 +180,10 @@ else:
 
 CONTACT_EMAIL = os.environ.get('CONTACT_EMAIL', 'pablocalderon94@hotmail.com')
 
+# Google reCAPTCHA v2
+RECAPTCHA_SITE_KEY = os.environ.get('RECAPTCHA_SITE_KEY', '')
+RECAPTCHA_SECRET_KEY = os.environ.get('RECAPTCHA_SECRET_KEY', '')
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 

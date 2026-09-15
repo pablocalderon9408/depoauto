@@ -24,7 +24,7 @@ services:
     restart: unless-stopped
 
   createbuckets:
-    image: minio/mc:latest
+    image: bitnami/minio-client:latest
     depends_on:
       - minio
     entrypoint: >-
